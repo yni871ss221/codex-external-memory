@@ -3,7 +3,7 @@
 This repository stores the portable parts of Codex external memory:
 
 - `vault/`: Obsidian vault content and non-secret plugin files.
-- `skills/obsidian-memory/`: Codex skill that tells Codex how to use the vault.
+- `skills/`: Codex skills, including this repo's memory rules and vendored `kepano/obsidian-skills`.
 - `setup/install-windows.ps1`: Per-PC setup script.
 
 Do not commit local API keys, Codex auth files, or machine-specific Codex config.
@@ -17,7 +17,17 @@ Do not commit local API keys, Codex auth files, or machine-specific Codex config
 5. Enable Community Plugins and enable `Local REST API & MCP Server`.
 6. Restart Codex Desktop.
 
-The setup script creates a per-PC API key in `vault/.obsidian/plugins/obsidian-local-rest-api/data.json`, links or copies the skill into `%USERPROFILE%\.codex\skills`, and updates `%USERPROFILE%\.codex\config.toml`.
+The setup script creates a per-PC API key in `vault/.obsidian/plugins/obsidian-local-rest-api/data.json`, links or copies all skills into `%USERPROFILE%\.codex\skills`, and updates `%USERPROFILE%\.codex\config.toml`.
+
+Vendored Obsidian skills from `kepano/obsidian-skills`:
+
+- `obsidian-markdown`
+- `obsidian-bases`
+- `json-canvas`
+- `obsidian-cli`
+- `defuddle`
+
+Use `obsidian-markdown` when summarizing or rewriting notes. Use `obsidian-bases` when creating structured indexes, filtered collections, or summary views across many notes.
 
 ## Daily use
 

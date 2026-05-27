@@ -6,7 +6,8 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $vault = Join-Path $RepoRoot 'vault'
-$skillSource = Join-Path $RepoRoot 'skills\obsidian-memory'
+$skillsSource = Join-Path $RepoRoot 'skills'
+$skillSource = Join-Path $skillsSource 'obsidian-memory'
 $codexHome = Join-Path $env:USERPROFILE '.codex'
 $codexSkills = Join-Path $codexHome 'skills'
 $skillTarget = Join-Path $codexSkills 'obsidian-memory'
@@ -18,8 +19,8 @@ if (-not (Test-Path $vault)) {
     throw "Vault not found: $vault"
 }
 
-if (-not (Test-Path $skillSource)) {
-    throw "Skill not found: $skillSource"
+if (-not (Test-Path $skillsSource)) {
+    throw "Skills directory not found: $skillsSource"
 }
 
 New-Item -ItemType Directory -Force -Path $pluginDir, $codexSkills | Out-Null
@@ -42,20 +43,24 @@ if (-not (Test-Path $pluginData)) {
     $apiKey = (Get-Content -LiteralPath $pluginData -Raw | ConvertFrom-Json).apiKey
 }
 
-if ($UseSymlink) {
-    if (Test-Path $skillTarget) {
-        $item = Get-Item -LiteralPath $skillTarget -Force
-        if (-not ($item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
-            $backup = "$skillTarget.backup-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
-            Move-Item -LiteralPath $skillTarget -Destination $backup
-        } else {
-            Remove-Item -LiteralPath $skillTarget -Force
+foreach ($sourceSkill in Get-ChildItem -LiteralPath $skillsSource -Directory) {
+    $targetSkill = Join-Path $codexSkills $sourceSkill.Name
+
+    if ($UseSymlink) {
+        if (Test-Path $targetSkill) {
+            $item = Get-Item -LiteralPath $targetSkill -Force
+            if (-not ($item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+                $backup = "$targetSkill.backup-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
+                Move-Item -LiteralPath $targetSkill -Destination $backup
+            } else {
+                Remove-Item -LiteralPath $targetSkill -Force
+            }
         }
+        New-Item -ItemType SymbolicLink -Path $targetSkill -Target $sourceSkill.FullName | Out-Null
+    } else {
+        New-Item -ItemType Directory -Force -Path $targetSkill | Out-Null
+        robocopy $sourceSkill.FullName $targetSkill /E /NFL /NDL /NJH /NJS /NP | Out-Null
     }
-    New-Item -ItemType SymbolicLink -Path $skillTarget -Target $skillSource | Out-Null
-} else {
-    New-Item -ItemType Directory -Force -Path $skillTarget | Out-Null
-    robocopy $skillSource $skillTarget /E /NFL /NDL /NJH /NJS /NP | Out-Null
 }
 
 if (-not (Test-Path $configPath)) {
@@ -110,6 +115,6 @@ $global['vaults'][$vaultId] = @{
 $global | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $obsidianJson -Encoding UTF8
 
 Write-Output "Vault: $vault"
-Write-Output "Skill: $skillTarget"
+Write-Output "Skills: $codexSkills"
 Write-Output "Codex config backup: $backup"
 Write-Output "Restart Obsidian and Codex Desktop after setup."

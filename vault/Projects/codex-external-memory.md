@@ -17,3 +17,5 @@ related: [[Preferences/profile]]
 - On this PC, Codex skill files are copied into `C:\Users\yni87\.codex\skills\obsidian-memory` by `setup/install-windows.ps1`.
 - Removed the old duplicate OneDrive vault at `C:\Users\yni87\OneDrive\ドキュメント\CodexMemory`; the canonical vault is `D:\develop\codex-external-memory\vault`.
 - Removed temporary Codex config backups from `C:\Users\yni87\.codex`.
+- Vendored `kepano/obsidian-skills` into `skills/` and updated setup to install all repo-managed skills.
+- Note summarization now uses `obsidian-markdown`; structured note indexes and summary views use `obsidian-bases`.

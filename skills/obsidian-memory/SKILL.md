@@ -45,6 +45,47 @@ Do not defer durable memory writes. Write during the conversation when any of th
 
 Do not store secrets, credentials, private keys, tokens, or sensitive personal data unless the user explicitly asks and the location is appropriate.
 
+## Summarize and Organize Notes
+
+When the user asks to summarize, consolidate, organize, or turn scattered notes into a cleaner note:
+
+1. Use the `obsidian-markdown` skill's conventions for Obsidian Flavored Markdown: frontmatter, wikilinks, embeds, callouts, and properties.
+2. Use `obsidian-bases` when the output should be an index, table, card/list view, filtered collection, or summary view across many notes.
+3. Read the source notes first, then write the summary immediately. Do not create a summary from memory alone if the source note exists.
+4. Put the summary in the most relevant existing root folder:
+   - technical or reusable synthesis: `Knowledge/topic-summary.md`
+   - project rollup: `Projects/project-name.md`
+   - decision summary: `Decisions/YYYY-MM-DD-topic.md`
+   - user preference synthesis: `Preferences/category.md`
+5. Include `summary_of` or `related` links in frontmatter when useful, and link source notes with `[[wikilinks]]` in the body.
+6. Prefer replacing/updating an existing summary note over creating duplicates.
+
+Summary notes should be concise and scannable:
+
+```markdown
+---
+date: YYYY-MM-DD
+tags: [summary, relevant]
+project: project-name
+summary_of: [[Source Note]]
+related: [[Other Note]]
+---
+
+# Title
+
+## Summary
+
+- Key point
+
+## Details
+
+- Supporting detail with [[wikilinks]]
+
+## Open Questions
+
+- Follow-up if any
+```
+
 ## Note Format
 
 Every durable note must include YAML frontmatter:
