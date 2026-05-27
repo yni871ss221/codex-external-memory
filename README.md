@@ -37,3 +37,15 @@ git push
 ```
 
 Keep durable memory in `vault/10_Codex/Memory.md`.
+
+## GitLab remote
+
+After creating a private GitLab project, connect this local repository:
+
+```powershell
+setup/connect-gitlab-remote.ps1 -RemoteUrl "git@gitlab.com:USER_OR_GROUP/codex-external-memory.git" -Push
+```
+
+Use SSH when possible. HTTPS also works, but GitLab credentials or a personal access token must be configured separately.
+
+GitLab MCP is optional. It is useful for managing GitLab issues, merge requests, CI pipelines, and repository metadata through Codex, but it is not required for memory sync. Memory sync only needs normal Git.
