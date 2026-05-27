@@ -15,3 +15,5 @@ related: [[Preferences/profile]]
 - GitHub MCP is configured in Codex via `GITHUB_PERSONAL_ACCESS_TOKEN`.
 - Memory structure now follows `Knowledge/`, `Decisions/`, `Projects/`, and `Preferences/`.
 - On this PC, Codex skill files are copied into `C:\Users\yni87\.codex\skills\obsidian-memory` by `setup/install-windows.ps1`.
+- Removed the old duplicate OneDrive vault at `C:\Users\yni87\OneDrive\ドキュメント\CodexMemory`; the canonical vault is `D:\develop\codex-external-memory\vault`.
+- Removed temporary Codex config backups from `C:\Users\yni87\.codex`.
