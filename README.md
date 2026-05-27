@@ -36,7 +36,12 @@ git commit -m "Update Codex memory"
 git push
 ```
 
-Keep durable memory in `vault/10_Codex/Memory.md`.
+Keep durable memory in:
+
+- `vault/Knowledge/` for reusable technical knowledge and solved issues.
+- `vault/Decisions/` for decisions and rationale.
+- `vault/Projects/` for project state.
+- `vault/Preferences/` for user profile and working style.
 
 ## GitHub remote
 

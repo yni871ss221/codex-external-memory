@@ -1,9 +1,13 @@
-﻿# Codex Memory Vault
+# Codex External Brain
 
-This vault is reserved for Codex-facing durable memory.
+This vault is reserved for Codex-facing durable memory across sessions and PCs.
 
-## Operating notes
+## Folders
 
-- Keep durable facts in `10_Codex/Memory.md`.
-- Keep transient capture in `00_Inbox/`.
-- Prefer concise, dated entries with source/context.
+- `Knowledge/`: technical findings, solved bugs, environment setup notes, and reusable lessons.
+- `Knowledge/mistakes.md`: recurring correction patterns explicitly pointed out by the user.
+- `Decisions/`: design, architecture, tooling, and policy decisions.
+- `Projects/`: current project status, versions, and summaries.
+- `Preferences/`: user profile, preferences, and working style.
+
+All durable notes should use YAML frontmatter and wiki links where useful.
