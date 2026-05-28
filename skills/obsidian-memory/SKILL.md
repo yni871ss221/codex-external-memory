@@ -11,12 +11,19 @@ Treat the Obsidian vault as the user's external brain. Use the `obsidian` MCP se
 
 Always be transparent: whenever you read or write Obsidian memory, tell the user exactly what was read or written. Report in the user's language when possible, e.g. `Obsidian: Knowledge/foo.md read` or `Obsidian: Knowledge/foo.md written`.
 
+## Language
+
+- Write Obsidian memory notes in Japanese by default.
+- Use another language only when the user explicitly asks for it or when preserving an exact source title, API name, command, library name, or quote.
+- File names, tags, and project identifiers may stay in ASCII/kebab-case for searchability and cross-platform compatibility.
+- If an existing durable note is in English, update it in Japanese when editing it.
+
 ## Startup Recall
 
 At the first user message of a new conversation:
 
 1. Read `Knowledge/mistakes.md`.
-2. Read relevant notes under `Preferences/`, especially `Preferences/profile.md` if present.
+2. Read relevant notes under `Preferences/`, especially `Preferences/profile.md` and `Preferences/language.md` if present.
 3. Search the vault with keywords from the user's request.
 4. Read relevant matching notes.
 5. Answer using the retrieved memory, distinguishing vault facts from inference when useful.
@@ -104,6 +111,7 @@ Body text. Link related notes with [[wiki links]].
 ```
 
 Use today's date in the user's locale. Keep notes simple and readable.
+Write the body and headings in Japanese unless the user requests otherwise.
 
 ## File Naming
 

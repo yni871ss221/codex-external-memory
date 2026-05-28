@@ -1,13 +1,13 @@
-# Codex External Brain
+# Codex 外部脳
 
-This vault is reserved for Codex-facing durable memory across sessions and PCs.
+このVaultは、CodexがセッションやPCをまたいで利用する永続記憶です。
 
-## Folders
+## フォルダ
 
-- `Knowledge/`: technical findings, solved bugs, environment setup notes, and reusable lessons.
-- `Knowledge/mistakes.md`: recurring correction patterns explicitly pointed out by the user.
-- `Decisions/`: design, architecture, tooling, and policy decisions.
-- `Projects/`: current project status, versions, and summaries.
-- `Preferences/`: user profile, preferences, and working style.
+- `Knowledge/`: 技術的な知見、解決したバグ、環境構築の学び、再利用できるノウハウ。
+- `Knowledge/mistakes.md`: ユーザーから明示的に訂正された、再発し得る行動ルール。
+- `Decisions/`: 設計、ツール、運用方針などの判断と理由。
+- `Projects/`: プロジェクトの状態、バージョン、概要。
+- `Preferences/`: ユーザーの好み、プロフィール、作業スタイル。
 
-All durable notes should use YAML frontmatter and wiki links where useful.
+永続ノートはYAMLフロントマターを付け、日本語で簡潔に書きます。関連ノートは `[[wiki link]]` でつなぎます。

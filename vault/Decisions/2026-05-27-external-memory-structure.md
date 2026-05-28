@@ -5,17 +5,17 @@ project: codex-external-memory
 related: [[Projects/codex-external-memory]], [[Preferences/profile]]
 ---
 
-# External Memory Structure
+# 外部記憶のフォルダ構成
 
-## Decision
+## 決定
 
-Use four top-level folders for Codex durable memory:
+Codexの永続記憶は、以下の4つのトップレベルフォルダで管理する。
 
 - `Knowledge/`
 - `Decisions/`
 - `Projects/`
 - `Preferences/`
 
-## Rationale
+## 理由
 
-This separates reusable technical knowledge, explicit decisions, project state, and user preferences. It keeps startup recall predictable and makes writes easier to classify immediately during a session.
+技術的な知見、明示的な判断、プロジェクト状態、ユーザーの好みを分けることで、セッション開始時の読み取りと会話中の書き込み先を判断しやすくするため。

@@ -5,18 +5,18 @@ project: codex-external-memory
 related: [[Projects/codex-external-memory]], [[Knowledge/obsidian-skills-note-summarization]]
 ---
 
-# Use obsidian-skills for Note Summaries
+# ノート要約にobsidian-skillsを使う
 
-## Decision
+## 決定
 
-Use `kepano/obsidian-skills` as the Obsidian-specific skill layer for note summarization and organization.
+ノートの要約や整理には、`kepano/obsidian-skills` をObsidian向けのスキル層として使う。
 
-## Rationale
+## 理由
 
-`obsidian-markdown` provides conventions for Obsidian Flavored Markdown, including wikilinks, properties, embeds, and callouts. `obsidian-bases` supports structured index and summary views across groups of notes.
+`obsidian-markdown` は、wikilink、properties、embeds、calloutsなど、Obsidian Flavored Markdownの作法を扱える。`obsidian-bases` は、複数ノートを横断する構造化ビューや要約ビューを作るときに使える。
 
-## Implementation
+## 実装
 
-- Vendored the upstream skills under `skills/`.
-- Updated `obsidian-memory` to route summarization and organization tasks through `obsidian-markdown` and `obsidian-bases`.
-- Updated setup so all repo-managed skills are installed into Codex on each PC.
+- 上流スキルを `skills/` に取り込んだ。
+- `obsidian-memory` を更新し、要約・整理タスクでは `obsidian-markdown` と `obsidian-bases` を使うようにした。
+- 他PCのセットアップでもrepo管理スキル一式がCodexへ入るようにした。
