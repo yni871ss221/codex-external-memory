@@ -31,3 +31,5 @@ unicli exec PlayMode.Exit
 - 日本語文字列がPowerShell上で文字化けして見える場合は、ファイルを `Get-Content -Encoding utf8` で読む。
 - 画像生成した透過Spriteは、フラットなクロマキー背景で生成し、透過処理後に `Assets/AreaSurvivors/Sprites/Generated` へ配置する。
 - `LoadSprite` は `Sprites/Generated` を優先して読むため、生成済み画像を置けばプロシージャルなフォールバック画像より優先される。
+- このPCではUniCLI CLI `v1.3.3` を `C:\Users\yni87\.local\bin\unicli\unicli.exe` に配置し、ユーザーPATHにも追加済み。Codex Desktop再起動前のシェルでは直接フルパスで呼び出せる。
+- Unity Editorを再起動するとき、ユーザーが引き続き操作するEditorは通常表示で起動する。非表示起動したEditorが `Temp/UnityLockfile` を保持すると、ユーザーがUnity Editorを開けないように見える。

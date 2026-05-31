@@ -7,6 +7,12 @@ related: [[Projects/codex-external-memory]], [[Knowledge/area-survivors-unity-wo
 
 # AreaSurvivors
 
+## 2026-05-31 Level-up keyboard navigation
+- `GameManager.ShowLevelUp()` selects the first upgrade button through `EventSystem` whenever the level-up panel opens.
+- Closing the panel clears the selected UI object so the next level-up reliably starts from the first choice.
+- Existing `InputManager.asset` bindings already provide Up/Down and W/S navigation through `Vertical`, plus Enter and Space confirmation through `Submit`.
+- Verified with UniCLI: compile errors `0`, warnings `0`; first button selected after opening; Down navigation selects the second button; submit closes the panel and resumes time; PlayMode error logs `0`.
+
 ## 概要
 
 - 仮タイトルは「エリアサバイバー」。
@@ -56,6 +62,23 @@ related: [[Projects/codex-external-memory]], [[Knowledge/area-survivors-unity-wo
 - 建造完了時は本体が一瞬明るく膨らみ、星形の光が回転しながらフェードする。
 - 完成後は破壊されず、最寄りの敵へ通常矢の半分サイズの矢を自動発射する。
 
+### 防衛柵
+
+- 4基のバリスタ塔の間を埋める外周壁として、敵の接近を防ぐ木製パリセード柵を4基配置。
+- 各辺は1枚の連続した長い柵画像で構成する。
+- 横長柵と縦配置専用柵は別画像。縦柵は横柵の回転ではなく、見下ろし視点に合う奥行き付きの専用Spriteを使う。
+- 縦配置専用柵は折れや曲がりのない、一直線の縦長Spriteへ差し替え済み。
+- 角のバリスタ塔の横には、プレイヤーが通過できる隙間を残す。
+- 柵画像は新規生成した透過ドット絵Spriteを使用。
+- 初期状態と破壊後は半透明。プレイヤーが接触している間だけ建造が進む。
+- 建造中はバリスタと同様に下から上へ実体化し、ゲージとトンカチ振りアニメーションを表示。
+- 完成時はHP `70` を持ち、敵との接触中にダメージを受ける。
+- HPが0になると破壊され、当たり判定が消える。プレイヤーが再度触れると再建築できる。
+- 完成した柵は敵を遮るが、プレイヤーは通過できる。完成時に柵とプレイヤーのColliderペアだけ衝突を無視する。
+- 建築Triggerと敵を遮るColliderは見た目に合わせて同寸法にする。横柵は `3.9 x 0.68`、縦柵は `0.34 x 3.9`。
+- プレイヤーが柵本体へ触れている間だけ建築が進み、敵も柵本体へ接触している間だけダメージを与える。
+- 柵はHPを持つが、HPバーは表示しない。
+
 ### 画面
 
 - `01_Title`: タイトル、プレイ、オプション、終了。
@@ -82,6 +105,12 @@ related: [[Projects/codex-external-memory]], [[Knowledge/area-survivors-unity-wo
 - `feature/01_GameSystemInit` は `origin/feature/01_GameSystemInit` へPush済み。
 - `AreaSurvivors` の作業ツリーはclean。
 - Unity再生成、コンパイル、PlayModeのErrorログ0件まで確認済み。
+- 2026-05-31: 防衛柵追加後もUnity再生成、コンパイル、PlayModeのErrorログ0件を確認済み。
+- 防衛柵は4基生成されることを確認済み。自動検証で完成時HP `70`、破壊後のブロッカー無効化、再建築後のHP回復とブロッカー再有効化を確認済み。
+- 縦柵もTransformを回転せず配置するため、HPバーは他の設備と同じ左右方向で表示される。
+- 自動検証で、完成した柵はプレイヤーColliderとの衝突を無視し、敵Colliderとの衝突は維持することを確認済み。
+- 自動検証で、建築Trigger外では進捗 `0`、柵本体への接触中だけ進捗が増加することを確認済み。
+- 自動検証で、敵が柵から離れている間はHP `70` のまま、接触後だけHP `66` へ減少することを確認済み。
 
 ## 次の確認候補
 
