@@ -129,3 +129,12 @@ related: [[Projects/codex-external-memory]], [[Knowledge/area-survivors-unity-wo
 - 1セルにつき障害物は最大1個とし、中央の塔周辺には空白を確保する。
 - 中央塔とバリスタ塔は `2 x 2` セル、柵は横 `6 x 1` セル・縦 `1 x 6` セルとして、画像キャンバス、Collider、配置位置を調整する。
 - 関連する恒久方針: [[Preferences/game-art-style]]
+
+## 2026-06-01 Tile Palette移行
+
+- 座標値とスケールだけで見た目を揃える方式をやめ、Unity標準の `Grid + Tilemap + Tile Palette` 構成へ移行する。
+- Game Sceneには `Environment Grid` 配下に `Ground Tilemap`、`Paint Tilemap`、`Object Tilemap` を配置する。
+- 草地9216枚は `Ground Tilemap`、木・石・池44枚は `Object Tilemap` にTileとして配置する。
+- 木・石・池のColliderはTileの根元位置に対応する別GameObjectとして残し、敵の障害物回避を維持する。
+- 中央塔、バリスタ、柵は動的設備のためPrefabのまま維持するが、配置位置は同じTilemapセル中心から取得する。
+- `Assets/AreaSurvivors/TilePalette/EnvironmentPalette.prefab` と9種類のTileアセットを追加する。
