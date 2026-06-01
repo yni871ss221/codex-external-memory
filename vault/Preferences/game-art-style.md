@@ -14,3 +14,4 @@ related: [[Projects/area-survivors]]
 - 1セルにつき障害物は最大1個とし、塔周辺には障害物を置かない空白を確保する。
 - 中央塔とバリスタ塔は `2 x 2` セル、柵は横 `6 x 1` セル・縦 `1 x 6` セルとして画像とColliderを揃える。
 - フィールドの見た目は座標指定だけで揃えず、Unity標準のTile PaletteとTilemap上へ配置して統一感を出す。
+- Tilemap上へ立てる設備Spriteは下端中央pivotを使い、根元セルと見た目の基準位置を一致させる。

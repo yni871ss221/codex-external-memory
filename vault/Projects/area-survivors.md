@@ -138,3 +138,11 @@ related: [[Projects/codex-external-memory]], [[Knowledge/area-survivors-unity-wo
 - 木・石・池のColliderはTileの根元位置に対応する別GameObjectとして残し、敵の障害物回避を維持する。
 - 中央塔、バリスタ、柵は動的設備のためPrefabのまま維持するが、配置位置は同じTilemapセル中心から取得する。
 - `Assets/AreaSurvivors/TilePalette/EnvironmentPalette.prefab` と9種類のTileアセットを追加する。
+
+## 2026-06-01 柵のTilemap向け再調整
+
+- 横柵と縦柵はTilemap配置を前提に別々の画像として再生成する。
+- 横柵は6セル幅の低い連続柵、縦柵は下端セルから奥行き方向へ伸びる6セル長の連続柵として扱う。
+- 両Spriteのpivotを下端中央 `{x: 0.5, y: 0}` に設定する。
+- 横柵は塔の上下 `±6` 行へ配置し、不透明領域で計測した塔との空白を上下とも `0.7709` ワールド単位へ揃える。
+- 縦柵は左右 `±6` 列、下端 `-3` 行へ配置し、Collider・建築ゲージ・トンカチ・完成演出を占有6セルの中央へ補正する。
