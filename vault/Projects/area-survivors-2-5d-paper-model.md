@@ -68,6 +68,16 @@ related: [[Projects/area-survivors]], [[Preferences/area-survivors-2-5d-style]],
 - UniCLI Compile: `0 errors / 0 warnings`
 - 横移動を含む20秒PlayMode: ログ `0件`
 
+## 2026-06-02 縦2セル柵の見た目修正
+
+- 配置座標は2セル間隔だったが、縦柵Textureが`96 x 256`で高さ`2.0`ワールドあり、床の2セル間隔`0.77`ワールドに対して重なりすぎていた。
+- 縦柵を「上端・中央継ぎ目・下端」の3本の主要杭で読める2セル用Textureとして再生成した。
+- `FenceDoubleVertical.png`を`96 x 128`へ変更し、表示高さを`1.0`ワールドへ縮小した。
+- 縦柵の足元影を`(0.42, 1.16)`から`(0.42, 0.78)`へ変更した。
+- 中央表示と横移動後のGame Viewで、左右の縦柵が2セル部品として安定表示されることを確認した。
+- UniCLI Compile: `0 errors / 0 warnings`
+- PlayMode: ログ `0件`
+
 ## 2026-06-02 防衛柵を2セル単位へ変更
 
 - 防衛柵の反復が細かすぎたため、1セルPrefabから2セルPrefabへ変更した。
