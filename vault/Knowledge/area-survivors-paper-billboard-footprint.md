@@ -32,3 +32,19 @@ related: [[Projects/area-survivors-2-5d-paper-model]]
 - 床面Y方向へ長いオブジェクトには、常時カメラ正面を向くBillboard表示をそのまま使わない。
 - 縦柵専用に床面へ沿うQuadを使うか、カメラ傾斜を考慮して画面上の占有範囲を補正する。
 - Collider寸法だけで完了扱いせず、床面上の範囲と画面上のTexture範囲を比較する。
+
+## 実施した修正
+
+- `MeshChild()`へ`faceCamera`引数を追加した。
+- 柵の`Ghost`、`Build Fill`、`Complete`は`faceCamera = false`とし、床面XYへ沿うQuadとして表示する。
+- Sprite Boundsから作るQuadへCollider寸法に合わせたScaleを適用した。
+- `DefensiveFence`は基準Scaleを保持し、建造中のFill伸縮と完成時のパルスでも床面QuadのScaleを壊さないようにした。
+
+## 修正後の実測
+
+- 縦20セル柵:
+  - Collider高さ: `7.6846`
+  - 床面Quad高さ: `7.6846`
+  - 画面上のCollider高さ: 約`387.66px`
+  - 画面上のQuad高さ: 約`387.66px`
+- Scene再オープン後、建造完了後、横移動後にも一致を確認した。

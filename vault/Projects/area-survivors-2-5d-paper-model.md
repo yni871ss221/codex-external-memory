@@ -89,6 +89,16 @@ related: [[Projects/area-survivors]], [[Preferences/area-survivors-2-5d-style]],
 - UniCLI Compile: `0 errors / 0 warnings`
 - Scene再オープン後のPlayMode: ログ `0件`
 
+## 2026-06-02 防衛柵を床面Quad表示へ変更
+
+- 柵Textureをカメラ正面へ向けるBillboard表示から、床面XYへ沿うQuad表示へ変更した。
+- 柵の`Ghost`、`Build Fill`、`Complete`だけ`PaperBillboard.faceCamera = false`とした。
+- QuadはCollider寸法へ正規化し、建造中のFill伸縮と完成時パルスでも基準Scaleを維持する。
+- 縦20セル柵はCollider高さ、床面Quad高さともに`7.6846`、画面上の高さも約`387.66px`で一致した。
+- Scene再オープン後、横移動後、縦柵建造完了後の表示を確認した。
+- UniCLI Compile: `0 errors / 0 warnings`
+- PlayMode: ログ `0件`
+
 ## 2026-06-02 防衛柵を5セル単位の20セル四方へ変更
 
 - 2セル柵では上下辺が12セル、左右辺が16セルで非対称だったため、5セルPrefabへ置き換えた。
