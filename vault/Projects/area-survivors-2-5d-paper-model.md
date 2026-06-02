@@ -67,3 +67,14 @@ related: [[Projects/area-survivors]], [[Preferences/area-survivors-2-5d-style]],
 - ワールド寸法を維持するため、セル柵TextureのPixels Per Unitは`128`とした。
 - UniCLI Compile: `0 errors / 0 warnings`
 - 横移動を含む20秒PlayMode: ログ `0件`
+
+## 2026-06-02 防衛柵を2セル単位へ変更
+
+- 防衛柵の反復が細かすぎたため、1セルPrefabから2セルPrefabへ変更した。
+- `FenceDoubleHorizontal`は`256 x 96`、`FenceDoubleVertical`は`96 x 256`の透過PNGとした。
+- 組み込み`image_gen`で2セル用の太縁パリセードTextureを生成し、透過化、トリミング、縮小を行った。
+- 上下辺はそれぞれ6本、左右辺はそれぞれ8本の2セル柵で構成する。
+- Collider、建造Trigger、足元影、建造ゲージ位置を2セル寸法へ合わせた。
+- 旧`FenceCell*`Textureと生成元画像を削除し、`FenceDouble*`へ置き換えた。
+- UniCLI Compile: `0 errors / 0 warnings`
+- 横移動を含む20秒PlayMode: ログ `0件`
