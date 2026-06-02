@@ -78,6 +78,18 @@ related: [[Projects/area-survivors]], [[Preferences/area-survivors-2-5d-style]],
 - UniCLI Compile: `0 errors / 0 warnings`
 - PlayMode: ログ `0件`
 
+## 2026-06-02 防衛柵を5セル単位の20セル四方へ変更
+
+- 2セル柵では上下辺が12セル、左右辺が16セルで非対称だったため、5セルPrefabへ置き換えた。
+- `FenceFiveHorizontal.png`は`448 x 96`、`FenceFiveVertical.png`は`96 x 256`の透過PNGとした。
+- 四隅のバリスタを`(±10, ±10)`セルへ配置した。
+- 各辺の柵中心は`-7.5, -2.5, 2.5, 7.5`セルとし、5セル柵4本で20セル分を構成する。
+- 半セル中心の配置に対応するため、`CellToWorld(TileGrid, Vector2)`を追加した。
+- 防衛区画の内側と外周付近を障害物候補セルから除外し、木、岩、池が柵やバリスタへ重ならないようにした。
+- Sceneを防衛線のみ同期し、横柵8本、縦柵8本、防衛区画内の障害物0件を確認した。
+- UniCLI Compile: `0 errors / 0 warnings`
+- PlayMode: ログ `0件`
+
 ## 2026-06-02 防衛柵を2セル単位へ変更
 
 - 防衛柵の反復が細かすぎたため、1セルPrefabから2セルPrefabへ変更した。
