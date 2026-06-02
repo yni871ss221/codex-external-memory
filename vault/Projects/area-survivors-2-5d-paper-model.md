@@ -23,3 +23,14 @@ related: [[Projects/area-survivors]], [[Preferences/area-survivors-2-5d-style]],
 - UniCLI Compile: `0 errors / 0 warnings`
 - 24秒PlayMode: Errorログ `0件`
 - Game Viewスクリーンショットで奥行き表示、敵の進入、青赤の領地Tintを確認した。
+
+## 2026-06-02 Quad Meshへの移行
+
+- 紙モデルVisualを`SpriteRenderer`から`PaperMeshVisual`へ移行した。
+- `PaperMeshVisual`は`MeshFilter + MeshRenderer`へQuad Meshを構築し、元Spriteの画像を透過TextureとしてMaterialへ指定する。
+- SpriteのpivotとtextureRectから頂点とUVを生成するため、アニメーション用Sprite差し替え後も接地位置と透過を維持する。
+- Quad MeshとMaterialは`HideAndDontSave`として一時生成し、Game Sceneへ埋め込まない。
+- キャラクター、敵、塔、バリスタ、柵、木、石、池、弾、経験値オーブ、Slash、地面影をQuad Mesh表示へ統一した。
+- 2DのRigidbody、Collider、領地塗りロジックは変更していない。
+- UniCLI Compile: `0 errors / 0 warnings`
+- 24秒PlayMode: ログ `0件`
