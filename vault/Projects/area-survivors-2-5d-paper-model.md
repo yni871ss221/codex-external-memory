@@ -56,3 +56,14 @@ related: [[Projects/area-survivors]], [[Preferences/area-survivors-2-5d-style]],
 - Orthographic化により、カメラ追従後もセル列の平行関係と同一サイズを維持する。
 - UniCLI Compile: `0 errors / 0 warnings`
 - 横移動を含むPlayMode確認と20秒PlayMode: ログ `0件`
+
+## 2026-06-02 セル柵の生成Texture差し替え
+
+- `FenceCellHorizontal`と`FenceCellVertical`を、画像生成したカジュアルな太縁パリセードTextureへ差し替えた。
+- 組み込み`image_gen`で緑背景付き素材を生成し、ローカル処理で透過化、トリミング、セル向け縮小を行った。
+- 横柵は`128 x 96`、縦柵は`96 x 128`の透過PNGとした。
+- 元の生成画像は`Assets/AreaSurvivors/Sprites/External/GeneratedFenceCell*Source.png`へ保存した。
+- `CreateSprites()`から簡易Pixel版のセル柵生成を外し、再生成時も生成Textureを維持する。
+- ワールド寸法を維持するため、セル柵TextureのPixels Per Unitは`128`とした。
+- UniCLI Compile: `0 errors / 0 warnings`
+- 横移動を含む20秒PlayMode: ログ `0件`
