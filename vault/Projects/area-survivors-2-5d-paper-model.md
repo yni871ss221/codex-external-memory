@@ -45,3 +45,14 @@ related: [[Projects/area-survivors]], [[Preferences/area-survivors-2-5d-style]],
 - 斜めPerspective視点で上下辺から突き抜けないよう、縦柵Visualへ`0.62`の奥行き方向スケールを適用した。
 - UniCLI Compile: `0 errors / 0 warnings`
 - 20秒PlayMode: ログ `0件`
+
+## 2026-06-02 防衛柵のセル単位化
+
+- 長尺の横柵・縦柵画像を1辺ごとに配置する方式を廃止した。
+- `FenceCellHorizontal`と`FenceCellVertical`の短いTextureを生成し、1セルにつき1Prefabを配置する。
+- 四隅のバリスタを除き、上下辺はそれぞれ11セル、左右辺はそれぞれ15セルの柵パーツで構成する。
+- 各柵パーツは独立した建造Trigger、Collider、HP、建造演出を持つ。
+- 横移動時に縦柵列が斜めに収束する原因はPerspectiveカメラだったため、斜め角度を維持したOrthographicカメラへ切り替えた。
+- Orthographic化により、カメラ追従後もセル列の平行関係と同一サイズを維持する。
+- UniCLI Compile: `0 errors / 0 warnings`
+- 横移動を含むPlayMode確認と20秒PlayMode: ログ `0件`
