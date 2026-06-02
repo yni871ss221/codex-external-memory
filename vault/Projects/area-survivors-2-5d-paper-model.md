@@ -34,3 +34,14 @@ related: [[Projects/area-survivors]], [[Preferences/area-survivors-2-5d-style]],
 - 2DのRigidbody、Collider、領地塗りロジックは変更していない。
 - UniCLI Compile: `0 errors / 0 warnings`
 - 24秒PlayMode: ログ `0件`
+
+## 2026-06-02 防衛柵の外周配置整理
+
+- 防衛柵を四隅のバリスタを結ぶ長方形として整理した。
+- バリスタは`(x, y) = (±6, ±8)`セルへ配置する。
+- 横柵は`(0, ±8)`セルへ配置し、左右のバリスタ間を結ぶ。
+- 縦柵は`(±6, 0)`セルへ配置し、上下のバリスタ間だけを結ぶ。
+- 縦柵のSprite pivot、Collider、建造演出、ゲージ位置を中央基準へ統一した。
+- 斜めPerspective視点で上下辺から突き抜けないよう、縦柵Visualへ`0.62`の奥行き方向スケールを適用した。
+- UniCLI Compile: `0 errors / 0 warnings`
+- 20秒PlayMode: ログ `0件`
