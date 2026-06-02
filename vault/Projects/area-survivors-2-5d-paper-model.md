@@ -78,6 +78,17 @@ related: [[Projects/area-survivors]], [[Preferences/area-survivors-2-5d-style]],
 - UniCLI Compile: `0 errors / 0 warnings`
 - PlayMode: ログ `0件`
 
+## 2026-06-02 防衛柵を各辺1オブジェクトへ統合
+
+- 5セル柵4本で構成していた各辺を、20セル分のTextureを持つPrefab 1本へ統合した。
+- 生成済み5セル素材をローカルで4連結し、継ぎ目と縮尺を維持した。
+- `FenceTwentyHorizontal.png`は`1792 x 96`、`FenceTwentyVertical.png`は`96 x 1024`の透過PNGとした。
+- 横柵を`(0, ±10)`、縦柵を`(±10, 0)`セルへ配置した。
+- Scene内の防衛柵は横2本、縦2本、合計4オブジェクトとなった。
+- Collider、建造Trigger、足元影、建造ゲージ位置を20セル寸法へ合わせた。
+- UniCLI Compile: `0 errors / 0 warnings`
+- Scene再オープン後のPlayMode: ログ `0件`
+
 ## 2026-06-02 防衛柵を5セル単位の20セル四方へ変更
 
 - 2セル柵では上下辺が12セル、左右辺が16セルで非対称だったため、5セルPrefabへ置き換えた。
