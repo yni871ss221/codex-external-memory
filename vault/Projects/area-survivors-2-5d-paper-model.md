@@ -162,3 +162,13 @@ related: [[Projects/area-survivors]], [[Preferences/area-survivors-2-5d-style]],
 - 完成時のSparkle演出が複数マテリアルにも適用されるよう、`DefensiveFence` の色キャプチャと色補正をRenderer単位からMaterial配列単位へ拡張した。
 - UniCLI Compile: `0 errors / 0 warnings`
 - PlayMode: ログ `0件`
+
+## 2026-06-03 3D防衛柵Mesh参照消失の修正
+
+- 面別シェーディング対応後、建造完了しても柵本体が線のようにしか表示されない退行が発生した。
+- PlayModeで `IsBuilt == true` かつ `completeObject.activeInHierarchy == true` なのに、子の `MeshFilter.sharedMesh` がすべて `null` になっていることを確認した。
+- 原因は、生成した見た目用MeshをProject内assetとして保存せずPrefabへ埋めようとしていたため、Prefab保存後にMesh参照が失われたこと。
+- 対応として、`Assets/AreaSurvivors/Meshes/FenceCube.asset` を生成し、柵パーツの `MeshFilter.sharedMesh` が永続assetを参照するようにした。
+- 表示復旧を優先し、面別Boxシェーディングはrevertして、部品別カラーのPrimitive風Cube構成へ戻した。
+- UniCLI Compile: `0 errors / 0 warnings`
+- PlayMode: `sharedMesh` 有効数 `36`、建造済み柵 `1`、ログ `0件`
