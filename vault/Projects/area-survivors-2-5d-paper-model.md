@@ -191,3 +191,13 @@ related: [[Projects/area-survivors]], [[Preferences/area-survivors-2-5d-style]],
 - 旧単色の `Fence ... Post/Rail/Brace/Cap` マテリアルは未参照を確認して削除した。
 - UniCLI Compile: `0 errors / 0 warnings`
 - PlayMode: `sharedMesh` 有効数 `73`、建造済み柵 `1`、ログ `0件`
+
+## 2026-06-03 中心塔・バリスタ塔の3Dテクスチャ面化
+
+- 中心塔とバリスタ塔を、従来の紙1枚表示から、テクスチャ付きQuad面を組み合わせた薄い3Dモデルへ変更した。
+- `Assets/AreaSurvivors/Meshes/TexturedQuad.asset` を追加し、塔/バリスタの各面がPrefab保存後も永続Meshを参照するようにした。
+- 正面パネルは固定斜め視点で読みやすいよう `PaperBillboard` でカメラ正面を向け、左右/背面は暗めの補助面として奥行きを出す構成にした。
+- バリスタ塔は `ghostObject / buildObject / completeObject` に対応し、建造中の下から伸びる表示と完成時のSparkleが3Dモデルにも効くようにした。
+- 中心塔は崩壊時に3DモデルRendererもフェードするよう、`TowerController` を複数Material対応にした。
+- UniCLI Compile: `0 errors / 0 warnings`
+- PlayMode: バリスタ `sharedMesh` 有効数 `15`、中心塔 `5`、ログ `0件`
