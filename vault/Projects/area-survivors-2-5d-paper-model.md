@@ -144,3 +144,12 @@ related: [[Projects/area-survivors]], [[Preferences/area-survivors-2-5d-style]],
 - 旧`FenceCell*`Textureと生成元画像を削除し、`FenceDouble*`へ置き換えた。
 - UniCLI Compile: `0 errors / 0 warnings`
 - 横移動を含む20秒PlayMode: ログ `0件`
+
+## 2026-06-03 3D防衛柵の部品別カラー化
+
+- 柵の「柵っぽさ」を上げる第一段階として、完成済み・建造中・ゴーストの各状態で、支柱・横板・補強材・キャップに別々の木材色を割り当てた。
+- `FencePalette` を追加し、単一の `Fence Wood / Build / Ghost` マテリアルから、部品別の `Post / Rail / Brace / Cap` マテリアルへ移行した。
+- 完成済み柵は、支柱をやや濃い茶、横板を中間色、補強材を暗色、キャップを明るめにして、単色の板ではなく組み上げた木柵として読めるようにした。
+- 古い単色マテリアルは参照が残っていないことを確認して削除した。
+- UniCLI Compile: `0 errors / 0 warnings`
+- PlayMode: ログ `0件`
