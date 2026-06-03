@@ -181,3 +181,13 @@ related: [[Projects/area-survivors]], [[Preferences/area-survivors-2-5d-style]],
 - 支柱と補強材の接合部に小さな暗色 `Nail` パーツを追加し、組み立てられた柵の印象を強めた。
 - UniCLI Compile: `0 errors / 0 warnings`
 - PlayMode: `sharedMesh` 有効数 `73`、建造済み柵 `1`、ログ `0件`
+
+## 2026-06-03 3D防衛柵のBoxメッシュ再挑戦
+
+- 以前失敗した面別Boxメッシュ化を、永続Mesh asset前提で再実装した。
+- `Assets/AreaSurvivors/Meshes/FenceShadedBox.asset` を追加し、支柱・横板・補強材・キャップがPrefab保存後も `sharedMesh` を失わないようにした。
+- 主要木材パーツは `Top / Side / Bottom` の3マテリアルに分け、上面を明るく、側面を少し暗く、下面をより暗くした。
+- 縁取り・木目・釘は単色Cubeのまま維持し、装飾の読みやすさと実装安定性を優先した。
+- 旧単色の `Fence ... Post/Rail/Brace/Cap` マテリアルは未参照を確認して削除した。
+- UniCLI Compile: `0 errors / 0 warnings`
+- PlayMode: `sharedMesh` 有効数 `73`、建造済み柵 `1`、ログ `0件`
