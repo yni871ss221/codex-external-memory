@@ -172,3 +172,12 @@ related: [[Projects/area-survivors]], [[Preferences/area-survivors-2-5d-style]],
 - 表示復旧を優先し、面別Boxシェーディングはrevertして、部品別カラーのPrimitive風Cube構成へ戻した。
 - UniCLI Compile: `0 errors / 0 warnings`
 - PlayMode: `sharedMesh` 有効数 `36`、建造済み柵 `1`、ログ `0件`
+
+## 2026-06-03 3D防衛柵の輪郭・木目・釘追加
+
+- Boxメッシュ再挑戦ではなく、安定している永続 `FenceCube.asset` 参照のCube構成を維持したまま、柵らしさを上げる装飾を追加した。
+- 支柱と横板に濃茶の細い `Edge` パーツを重ね、遠目でも板の端が読めるようにした。
+- 横板に短い太めの `Grain` パーツ、支柱に縦方向の木目パーツを少量追加し、細かすぎない木材表現にした。
+- 支柱と補強材の接合部に小さな暗色 `Nail` パーツを追加し、組み立てられた柵の印象を強めた。
+- UniCLI Compile: `0 errors / 0 warnings`
+- PlayMode: `sharedMesh` 有効数 `73`、建造済み柵 `1`、ログ `0件`
