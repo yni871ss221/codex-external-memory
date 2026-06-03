@@ -153,3 +153,12 @@ related: [[Projects/area-survivors]], [[Preferences/area-survivors-2-5d-style]],
 - 古い単色マテリアルは参照が残っていないことを確認して削除した。
 - UniCLI Compile: `0 errors / 0 warnings`
 - PlayMode: ログ `0件`
+
+## 2026-06-03 3D防衛柵の面別シェーディング
+
+- 柵の立体感を上げる第二段階として、3D柵パーツをPrimitive Cubeから独自Boxメッシュへ置き換えた。
+- 各Boxは上面・側面・下面を別サブメッシュに分け、上面を明るく、側面を少し暗く、下面をさらに暗くするマテリアル構成にした。
+- `FencePartMaterials` を追加し、支柱・横板・補強材・キャップそれぞれの木材色に対して `Top / Side / Bottom` の陰影差を生成するようにした。
+- 完成時のSparkle演出が複数マテリアルにも適用されるよう、`DefensiveFence` の色キャプチャと色補正をRenderer単位からMaterial配列単位へ拡張した。
+- UniCLI Compile: `0 errors / 0 warnings`
+- PlayMode: ログ `0件`
