@@ -78,6 +78,18 @@ related: [[Projects/area-survivors]], [[Preferences/area-survivors-2-5d-style]],
 - UniCLI Compile: `0 errors / 0 warnings`
 - PlayMode: ログ `0件`
 
+## 2026-06-03 防衛柵の3D低ポリ化試作
+
+- 床面Quad化は平面的に見えすぎたため、防衛柵本体を低ポリ3Dオブジェクトへ置き換えた。
+- 柵はCube製の支柱、上段レール、下段レールで構成し、横柵・縦柵とも20セル分の1Prefabを維持する。
+- `DefensiveFence`は紙モデル専用の`PaperMeshVisual`に加えて、3D本体用の`ghostObject`、`buildObject`、`completeObject`を扱えるようにした。
+- 未建造、建造中、完成状態は同じ3D形状を使い、建造中はZ方向へ下から伸びる。
+- 3D柵用Materialを`Assets/AreaSurvivors/Materials`へ追加した。
+- 既存の2D Collider、建造Trigger、建造ゲージ、トンカチ、完成Sparkleは維持した。
+- Scene再オープン後、Prefab更新だけで既存Sceneへ反映されることを確認した。
+- UniCLI Compile: `0 errors / 0 warnings`
+- PlayMode: ログ `0件`
+
 ## 2026-06-02 防衛柵を各辺1オブジェクトへ統合
 
 - 5セル柵4本で構成していた各辺を、20セル分のTextureを持つPrefab 1本へ統合した。
