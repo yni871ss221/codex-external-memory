@@ -33,3 +33,13 @@ related: [[Preferences/language]]
 **NG Action**: 縦柵Prefabを2セル間隔で配置したが、Textureの表示高さが間隔に対して大きすぎる状態を見落とし、1セル柵の連続に見える表示を完了扱いした。
 **Correct Action**: グリッド部品を複数セル単位へ変更するときは、配置座標だけでなく縦横それぞれのTexture寸法、ワールド表示寸法、重なり量をGame Viewで確認する。
 **Trigger**: AreaSurvivorsでグリッド上の柵や連結オブジェクトを複数セル単位へ変更するとき。
+
+2026-06-08: HUD項目をPlay中に動的生成した
+**NG Action**: ユーザーがEditor上で位置調整したいHUD項目について、Scene上に配置せず、`GameManager` の実行時処理で不足項目を生成した。
+**Correct Action**: AreaSurvivorsのHUD項目を追加・変更するときは、まず `05_Game.unity` のHUD Canvas配下にSceneオブジェクトとして配置し、ランタイム側は既存要素を検索して値を流し込むだけにする。
+**Trigger**: AreaSurvivorsでHUDパネル、HUDテキスト、HUDアイコン、ステータス表示、資源表示などを追加・変更するとき。
+
+2026-06-09: 大型の通常オークをオークキングと誤認した
+**NG Action**: スクリーンショット上で大きく表示された敵を、敵種別の確認をせずオークキングとして原因調査を進めた。
+**Correct Action**: 敵AIや衝突問題を調査するときは、見た目だけで敵種別を判断せず、通常・エリート・ボスのどの定義かをユーザー確認または実行時データで確認する。
+**Trigger**: AreaSurvivorsで敵のサイズ、アウトライン、衝突、移動挙動から敵種別を推定するとき。
