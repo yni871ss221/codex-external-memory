@@ -1,4 +1,4 @@
----
+﻿---
 date: 2026-06-10
 tags: [preferences, area-survivors, workflow, credit-saving, testing]
 project: area-survivors
@@ -36,3 +36,23 @@ related: [[Preferences/testing-workflow]], [[Knowledge/area-survivors-unity-work
 
 - 軽微な修正は記録しない。
 - 再発し得る原因と解決策、長期的な設計判断、作業ルール、作業終了時の重要な進捗だけ記録する。
+## 2026-06-11 GameplayTest軽量化
+
+- `90_GameplayTest.unity` は `05_Game.unity` のコピーにしない。空に近いBootstrap Sceneとして維持する。
+- GameplayTest実行時はBootstrapが `05_Game` をAdditiveロードし、`GameplayTestRunner` を実行時に注入する。
+- Scenario選択はScene保存ではなく `EditorPrefs` に保持し、選択操作でGit差分を出さない。
+- 通常検証は `Area Survivors/Test Scenarios/Run Samples/...` の1コマンド実行を使う。
+- `05_Game.unity` の巨大差分本文は読まず、必要なときだけ対象ファイル・`git diff --stat`・固定Scenarioの結果を確認する。
+
+## 常時ルール
+
+- どの対応でも、実装前後に「作業量・検証時間・Scene差分・クレジット使用が肥大化しないか」を確認する。
+- 大きなSceneやPrefabを直接増やす変更では、実行時生成・Bootstrap・Scenario化・Editorツール化で差分を小さくできないか先に検討する。
+- 検証は原則、通常プレイで事象発生を待たず、GameplayTest Scenarioや専用Editorメニューで再現する。
+- UniCLIやUnity検証が長時間止まって見える場合は、同じ呼び出しを繰り返す前にコマンド、権限、待ち状態、ログ出力先を確認する。
+
+## 2026-06-11 Ground Tilemap軽量化
+
+- `05_Game.unity` の `Ground Tilemap` はSceneに全セルを保存せず、`TileGrid.Build()` の実行時生成を正とする。
+- Scene上の保存済み地面タイルを整理したい場合は `Area Survivors/Map/Clear Saved Ground Tiles In 05_Game` を使う。
+- 見た目確認用にEditor上で地面を再構築したい場合は `Area Survivors/Map/Rebuild Ground Preview In Active Scene` を使う。

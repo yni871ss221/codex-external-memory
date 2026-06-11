@@ -108,3 +108,13 @@ related: [[area-survivors]], [[area-survivors-history]], [[area-survivors-unity-
 - 資源消費型建造のUI表記をさらに分かりやすくする。
 - 建造キャンセルと資源全額返却を実装する。
 - スキルツリーで資源・採取・建造関連パラメータを強化可能にする。
+
+## 2026-06-11 引継ぎ: 軽量化と検証効率化
+
+- `90_GameplayTest.unity` は `05_Game.unity` のコピーではなく、Bootstrap Sceneとして維持する。
+- GameplayTest実行時はBootstrapが `05_Game` をAdditiveロードし、`GameplayTestRunner` を実行時に注入する。
+- Scenario選択は `EditorPrefs` の `AreaSurvivors.GameplayTestScenarioPath` に保持し、Scenario切り替えでScene差分を出さない。
+- `05_Game.unity` の `Ground Tilemap` 保存済みタイルは削除済み。地面は `TileGrid.Build()` が実行時に再生成する。
+- 追加Editorメニュー: `Area Survivors/Map/Clear Saved Ground Tiles In 05_Game`、`Area Survivors/Map/Rebuild Ground Preview In Active Scene`。
+- 検証済み: UniCLI Compile `0 errors / 0 warnings`、`Gameplay_Prefab_Smoke` PASS、`Gameplay_Navigation_Default` PASS、`Gameplay_Map_Perimeter` PASS。
+- 次回以降は、大きな作業前に軽量化済みSceneをベースとして扱い、巨大Scene差分本文の読み込みは避ける。
