@@ -48,3 +48,38 @@ related: [[Preferences/language]]
 **NG Action**: 現在のCodex環境が `danger-full-access` かつ承認ポリシー `never` のときに、`sandbox_permissions` を付けてUniCLIやPowerShellを実行しようとする。
 **Correct Action**: このPC/このスレッド環境では、ツール呼び出しに `sandbox_permissions` を付けない。UniCLIが止まったように見えたら、権限指定・プロセス待ち・Unityログ・UniCLI出力を先に確認し、同じ失敗呼び出しを繰り返さない。
 **Trigger**: AreaSurvivorsでUniCLI、Unity検証、PowerShellコマンドを実行するとき。
+
+2026-06-11: 外部メモリリポジトリをpullせず古いルールで作業した
+**NG Action**: ユーザーが「最新の作業履歴や作業ルールを取得してほしい」と依頼していたのに、AreaSurvivors本体だけをpullし、外部メモリリポジトリ `codex-external-memory` の `git pull` を実行しないままローカルの古いメモリを読んで作業した。
+**Correct Action**: AreaSurvivorsで作業開始時に最新履歴・ルール取得を求められた場合は、必ずAreaSurvivors本体と外部メモリリポジトリの両方で `git status --short --branch` と `git pull --ff-only` を確認してから、`Knowledge/mistakes`、`Projects/area-survivors-current`、`Knowledge/area-survivors-memory-rules`、必要なworkflow/preferenceノートを `-Encoding UTF8` で読む。
+**Trigger**: ユーザーが「最新」「pull」「作業履歴」「作業ルール」「外部メモリ」「メモリ」を含む開始指示をしたとき。
+
+2026-06-11: 画像をゲーム用に整形せずそのまま取り込んだ
+**NG Action**: Google Driveから取得した大工小屋画像を、白背景の切り抜きや解像度調整をせず、そのまま `Generated` SpriteとしてゲームとHUDに使用した。
+**Correct Action**: AreaSurvivorsの画像素材は、原本を `Assets/AreaSurvivors/Sprites/External/*Source.png` に残し、実際に参照する画像は背景透過、トリミング、解像度調整、既存資産とのサイズ比較、Unity Importer設定を行ったうえで `Generated` 側へ配置する。
+**Trigger**: AreaSurvivorsでGoogle Drive画像、添付画像、生成画像をSprite・Prefab・HUDへ組み込むとき。
+
+2026-06-11: HUD追加時に現在のScene配置を基準にしなかった
+**NG Action**: 建造メニューへ大工小屋スロットを追加する際、初期実装時の固定座標を前提にし、ユーザーが調整済みの既存スロット高さとずれた位置へ配置した。
+**Correct Action**: AreaSurvivorsのHUDへ項目を追加するときは、`05_Game.unity` の既存兄弟要素の `RectTransform` を確認し、既存スロット/パネルの位置・間隔・高さから新規要素の座標を導出する。ランタイムのfallback生成やEditorセットアップも同じ導出ロジックにする。
+**Trigger**: AreaSurvivorsで建造メニュー、プレイヤーステータス、資源パネル、塔パネルなどHUD要素を追加・移動・拡張するとき。
+
+2026-06-11: 建造ハンマー位置を建造対象ではなくプレイヤー/支援元へ寄せた
+**NG Action**: 大工小屋の自動建造対応で建造進捗処理を共通化した際、ハンマー表示位置が `activeBuilder` やColliderの `ClosestPoint` に影響され、建造対象物上ではなくプレイヤー付近や支援元側へ出る挙動にした。
+**Correct Action**: 建造中ハンマー画像は、バリスタ・柵・大工小屋など建造対象物のローカル固定位置に表示する。プレイヤー位置や大工小屋の自動建造元Transformをハンマー位置計算に使わない。
+**Trigger**: AreaSurvivorsで建造進捗、建造支援、自動建造、ハンマー演出、建造中Visualを変更するとき。
+
+2026-06-11: クレジット消費を増やす大きな出力を不用意に読んだ
+**NG Action**: Unityの `Commands.List` をフィルタが効かない状態で実行して巨大なコマンド一覧を読み込んだり、`rg` / `Get-ChildItem` / 長いSkill本文 / 長い外部メモリを必要以上に広く読み、トークン・クレジット消費を増やした。
+**Correct Action**: 調査時は対象ファイル、検索語、行数、出力件数を必ず絞る。巨大出力が予想されるUnityコマンド一覧や広範囲ファイル列挙は避け、必要なら `Select-Object -First`、具体パス指定、`rg -n` の限定パターン、該当セクションのみの読み取りを使う。Skillや外部メモリも必要箇所だけ読む。
+**Trigger**: AreaSurvivorsやUnity作業で調査、コマンド探索、外部メモリ確認、スキル確認、ファイル一覧取得を行うとき。
+
+2026-06-11: 大工小屋自身への自動建造が進まない減衰バグを入れた
+**NG Action**: バリスタ/柵には外部建造作業中の進捗減衰抑制を入れていたが、大工小屋には同じ処理を入れず、自動建造速度 `0.1x` が建造ゲージ減衰に打ち消されて2軒目以降の大工小屋が自動建造されない状態にした。
+**Correct Action**: `IBuildableConstruction.AddBuildWork` を受ける建造物には、外部建造作業直後に進捗減衰を一時停止する `assistedBuildTimer` 相当の処理を必ず揃える。新しい建造物を自動建造対象に含める場合は、バリスタ/柵/大工小屋など対象種別ごとに同じ挙動か確認する。
+**Trigger**: AreaSurvivorsで自動建造、建造ゲージ減衰、`IBuildableConstruction` 実装、新規建造物を追加・変更するとき。
+
+2026-06-12: ロビーUIをランタイム生成のまま扱い、Editorで調整しづらい構成にした
+**NG Action**: ユーザーがEditor上で位置修正したいロビー画面について、HUDと同じScene配置方針をすぐ適用せず、`LobbyScreen` のランタイム生成でパネルやボタンを作る構成にした。
+**Correct Action**: AreaSurvivorsでHUD/ロビー/メニューなど、ユーザーが位置調整するUIを追加・変更するときは、Scene上のUIオブジェクトとして配置し、ランタイム側は既存要素へバインドして値更新とボタン接続だけを行う。フォールバック生成はScene要素がない場合の保険に留める。
+**Trigger**: AreaSurvivorsでロビー画面、HUD、建造メニュー、ステージパネル、ステータスパネルなどのUIを追加・移動・拡張するとき。

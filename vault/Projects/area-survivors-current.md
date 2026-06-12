@@ -1,5 +1,5 @@
 ---
-date: 2026-06-10
+date: 2026-06-11
 tags: [project, current, unity, game, area-survivors]
 project: area-survivors
 related: [[area-survivors]], [[area-survivors-history]], [[area-survivors-unity-workflow]], [[game-art-style]], [[area-survivors-2-5d-style]], [[area-survivors-stencil-occlusion-silhouette]]
@@ -11,8 +11,8 @@ related: [[area-survivors]], [[area-survivors-history]], [[area-survivors-unity-
 
 - ローカル作業パス: `D:\develop\unity_workspace\AreaSurvivors`
 - ブランチ: `feature/01_GameSystemInit`
-- 最新Push済みコミット: `19fba1e Improve map presentation and occlusion rendering`
-- 2026-06-10終了時点でAreaSurvivors作業ツリーはclean。
+- 最新Push済みコミット: `561a0dd Add stage two and automated buildings`
+- 2026-06-12時点で、大工小屋・作業小屋・監視塔・ステージ2・ロビーScene配置化までPush済み。
 
 ## 現在有効なゲーム方針
 
@@ -50,6 +50,7 @@ related: [[area-survivors]], [[area-survivors-history]], [[area-survivors-unity-
 ## 現在有効なHUD仕様
 
 - HUD項目は可能な限りScene上に配置し、Editorで位置調整できるようにする。
+- ロビー画面もHUDと同様に `03_Lobby.unity` のScene上へ配置し、ランタイム側は既存UIへバインドして状態更新とボタン接続だけを行う。
 - 左上にプレイヤー枠、武器枠、HP/XPゲージ、ステータス枠を置く。
 - 上部中央に経過時間と撃破数をパネル表示する。
 - 撃破数の右に木・石所持数パネルを置き、丸太/石アイコン + 所持数で表示する。
@@ -88,6 +89,25 @@ related: [[area-survivors]], [[area-survivors-history]], [[area-survivors-unity-
 - 資源獲得量は採取1tickごとの木・石獲得量へ加算する。
 - HUD左側ステータス欄に、ノックバック、防御力、経験値倍率、自動回復、作業速度、資源獲得量をScene上の項目として追加した。
 - スキルツリーに上記6ステータスの永続強化ノードを追加した。
+- 建造物「大工小屋」を追加した。
+- 大工小屋はスキルツリーの `UnlockCarpenterHut` で解放され、建造メニュー4番に表示される。
+- 初期コストは木30・石20。1セル建造物として配置する。
+- 完成後、大工小屋と青いエリアで接続している未完成の建造予約へ自動建造作業を加える。
+- 自動建造速度は大工小屋1軒あたり初期プレイヤー作業速度の約1/10相当 (`0.1x`)。完成済み大工小屋が複数ある場合は、2軒で2倍、3軒で3倍のように軒数分だけ加算される。プレイヤー接触時はプレイヤー分と大工小屋分の両方が進む。
+- 大工小屋画像はGoogle Drive配置画像 `ChatGPT Image 2026年6月10日 22_14_28.png` を原本として `Assets/AreaSurvivors/Sprites/External/CarpenterHutSource.png` に残し、背景透過・トリミング・256px化した処理済み画像を `Assets/AreaSurvivors/Sprites/Generated/CarpenterHut.png` として取り込んだ。
+- 建造物「作業小屋」を追加済み。スキルツリー解放後に建造可能。初期コストは木30・石20。青いエリアで接続している自然物から、共通自動処理タイマーで5秒ごとに木・石を最大1種類ずつ採取する。自然物の残量を減らし、プレイヤー採取と同様に資源ポップアップを出す。
+- 作業小屋用スキルとして「自動獲得速度上昇」と「自動獲得量増加」を追加済み。速度は最大2回で5秒ごとから3秒ごとまで短縮。獲得量は最大2回で木・石それぞれ3ずつまで増加。
+- 建造物「監視塔」を追加済み。スキルツリー解放後に建造可能。初期コストは木50・石50、初期HP100、2x2セル扱い。共通自動処理タイマーで2秒ごとに周囲10セル内の最も近い青以外のセルへ、プレイヤーが踏んだ時と同じ塗り判定を付与する。敵への攻撃はしない。
+- 大工小屋と作業小屋の初期HPは50。監視塔・大工小屋・作業小屋はいずれもバリスタや柵と同様に敵衝突でダメージを受ける。
+- バリスタ、横柵、縦柵、大工小屋、作業小屋、監視塔、および自然物系8件は、画像の下端を基準に揃える下端アンカー方式へ寄せた。ズーム時のカメラ角度差で下端がずれて見える問題は、監視塔で下端アンカー化して改善した。
+- 建造中のハンマー、斧、つるはしは対象オブジェクトのスケールに引きずられないよう、見た目サイズを揃える。自動建造中も接触建造中も対象上に表示する。
+- 建造メニューは左から `1 横柵`、`2 縦柵`、`3 バリスタ`、`4 監視塔`、`5 大工小屋`、`6 作業小屋` の順。ロック中の建造物は画像を表示せず、解放後に表示する。
+- 建造アナウンスは建造パネル内の建造スペース前に配置し、背面パネルより手前に表示する。
+- ステージ2を追加済み。初回ステージ1クリア時はクリア画面で「ステージ2がアンロックされました」を表示して終了し、以後はステージ1ボス撃破後にステージ2へ遷移する。
+- ステージ2はHUD時間を5:00から再開し、10:00でゴブリンロードが出現する。敵はゴブリン、オーガ、ゴブリンロード。HP/攻撃力はステージ1対応敵の約2倍、移動速度は現状ステージ1相当。
+- クリア済みステージはロビーのステージパネルで倍速チェックを表示する。倍速時はそのステージの経過時間と敵移動速度が2倍、プレイヤー速度など他パラメータは通常通り。
+- ロビー画面には4ステージ分の進行パネルをScene配置。未解放ステージはボス画像をシルエット/伏せ表示、クリア済みは `CLEAR` を表示する。
+- テスト用にステージ2開始ボタン、スキル初期化、トークン+99999を追加済み。
 
 ## 検証
 
@@ -98,6 +118,9 @@ related: [[area-survivors]], [[area-survivors-history]], [[area-survivors-unity-
 - 2026-06-08: 左HUD追加項目をScene上へ配置し直し、ランタイム動的生成を停止。UniCLI Compile `0 errors / 0 warnings`、PlayMode Errorログ `0件`。
 - 2026-06-08: 新規ステータス6種、ノックバック、防御、自動回復、経験値小数蓄積、作業速度/資源獲得反映後、UniCLI Compile `0 errors / 0 warnings`、PlayMode Errorログ `0件`。
 - 直近の変更後、UniCLI Compile は `0 errors / 0 warnings` を確認済み。
+- 2026-06-11: 大工小屋追加後、UniCLI Compile `0 errors / 0 warnings`、`Gameplay_Prefab_Smoke` PASS、Console Error `0件`。
+- 2026-06-11: 大工小屋画像の背景透過/縮小と建造メニュー4番スロットの高さ補正後、UniCLI Compile `0 errors / 0 warnings`、`Gameplay_Prefab_Smoke` PASS。
+- 2026-06-12: ステージ2、大工小屋、作業小屋、監視塔、下端アンカー、ロビーScene配置化を含む大規模変更後、Unity Editorログで `error CS` / 例外なしを確認。バッチ実行はUnity Editor起動中のため同一プロジェクトロックで不可。
 - PlayMode確認は変更内容に応じて実施する。
 
 ## 次の作業候補
