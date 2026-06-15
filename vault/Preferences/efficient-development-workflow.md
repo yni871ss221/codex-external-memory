@@ -56,3 +56,18 @@ related: [[Preferences/testing-workflow]], [[Knowledge/area-survivors-unity-work
 - `05_Game.unity` の `Ground Tilemap` はSceneに全セルを保存せず、`TileGrid.Build()` の実行時生成を正とする。
 - Scene上の保存済み地面タイルを整理したい場合は `Area Survivors/Map/Clear Saved Ground Tiles In 05_Game` を使う。
 - 見た目確認用にEditor上で地面を再構築したい場合は `Area Survivors/Map/Rebuild Ground Preview In Active Scene` を使う。
+
+## 2026-06-13 UI配置の基本方針
+
+- AreaSurvivorsでHUD、ロビー、メニュー、ステージ表示、撃破数表示などユーザーがEditor上で位置調整したいUIを追加・変更する場合は、特別な理由がない限りScene上にUIオブジェクトとして配置する。
+- ランタイム側は既存Sceneオブジェクトを検索して値更新・ボタン接続・表示切替だけを行う。Sceneオブジェクトが存在しない場合のみフォールバック生成を許容する。
+- 既にScene上に存在するUIのRectTransformは、実行時コードで固定座標・固定サイズへ上書きしない。初期座標の設定は新規生成時またはEditor用正規化ツール内に限定する。
+- クレジット/作業量削減のため、HUD全体再生成ではなく必要なパネルや子要素だけを追加・更新する。
+
+## 2026-06-15 締め作業の定型化
+
+- ユーザーが「締め作業」「作業終了」「今日の作業終了」「Obsidianへ記録」「コミット＆プッシュ」を依頼した場合は、`area-survivors-closeout` skill を使う。
+- 締め作業では、AreaSurvivors本体だけでなく `C:\Develop\unity_workspace\codex-external-memory` も必ず対象にする。
+- Obsidianへ、作業履歴、現在状態、再発防止のミス、設計判断、スキル/ルール更新を記録する。
+- その後、AreaSurvivors repo と外部メモリ repo の両方で `git status`、必要な差分確認、commit、pushを行う。
+- 外部メモリrepoのcommit/pushを省略しない。省略せざるを得ない場合は理由を明示する。

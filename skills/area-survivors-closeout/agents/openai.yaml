@@ -1,0 +1,6 @@
+﻿interface:
+  display_name: "AreaSurvivors Closeout"
+  short_description: "AreaSurvivorsの締め作業を定型化する"
+  default_prompt: "Use $area-survivors-closeout to record the day's AreaSurvivors work, update Obsidian memory, then commit and push both repositories."
+policy:
+  allow_implicit_invocation: true

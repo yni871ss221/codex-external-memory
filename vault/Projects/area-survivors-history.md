@@ -142,3 +142,19 @@ AreaSurvivors の大きな作業履歴。次回開始時は通常 [[area-survivo
 - テスト用に、ステージ2から開始するボタン、スキル初期化、トークン+99999を追加した。
 - ロビー画面は当初ランタイム生成だったが、ユーザーがEditorで位置修正できるよう `03_Lobby.unity` のScene配置へ移行した。`LobbyScreen` はScene上のUIへバインドし、動的な状態更新とボタン接続だけを担当する。
 - コミット: `561a0dd Add stage two and automated buildings`
+
+## 2026-06-13〜15 中心塔アップグレード・GridObjectVisual規格化・Collider整理
+
+- 中心塔から砲弾を発射し、着弾時に爆発するスキルツリー連動攻撃を追加した。砲弾、爆発、アップグレード関連アイコンを `Resources/Generated` に追加した。
+- HUD上にScene配置のStage表示とドクロアイコン付き撃破数表示を追加した。
+- 中心塔アップグレードを追加した。コストは木300・石300。完了時に最大HPを160から450へ増加、回復量+3、大砲攻撃力+10、爆発範囲2倍、中心塔根元セル基準で周囲15セルを即時青化する。
+- アップグレード予約中は元の塔画像を非表示にし、アップグレード後塔のゴースト/建造中表示/完成表示を使う。キャンセル時は資源を返却して元画像を再表示する。
+- 中心塔、アップグレード後中心塔、監視塔の新しい四角ベース画像をユーザー提供PNGから取り込み、外周黒背景だけを透過して内部黒ディテールを残す方式へ調整した。
+- 中心塔の旧 `Textured Model` 構造を通常表示から外し、`PaperMeshVisual` の `Base Tower Image` に切り替えた。
+- `GridObjectVisual` に、中心セルと占有セル数からRootを占有範囲の下端中央へ配置する共通APIを追加した。中心塔もこの規格に合わせ、画像、アップグレード画像、Collider、Grid登録、青エリア基準を同じ中心セルから計算するようにした。
+- `GridObjectMarker` は `GridObjectVisual` が保持する中心セルを使って登録できるようにした。
+- 中心塔を含む建造物のColliderは、占有セル範囲のBoxColliderを正とする方針へ整理した。
+- バリスタ、柵、大工小屋、作業小屋、監視塔は、完成後にプレイヤーとも衝突するようにした。従来の `Physics2D.IgnoreCollision(blockingCollider, playerCollider, true)` によるプレイヤー通過処理は撤去した。
+- PlayerプレハブのColliderをランタイムで上書きしていた `PlayerController.ConfigureFootCollider()` を削除し、プレハブ上のCollider設定をそのまま使うようにした。
+- 中心塔のシルエット判定は、YSortを持つ遮蔽物では描画順だけでなく「遮蔽物の足元がプレイヤーより手前か」を必須条件にした。中心塔が手前にいないのにシルエットが出る問題を修正した。
+- `area-survivors-closeout` skill を追加した。今後、締め作業や作業終了時にはObsidian記録、スキル/ルール更新、AreaSurvivorsと外部メモリrepoのcommit/pushをまとめて行う。

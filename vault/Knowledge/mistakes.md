@@ -83,3 +83,23 @@ related: [[Preferences/language]]
 **NG Action**: ユーザーがEditor上で位置修正したいロビー画面について、HUDと同じScene配置方針をすぐ適用せず、`LobbyScreen` のランタイム生成でパネルやボタンを作る構成にした。
 **Correct Action**: AreaSurvivorsでHUD/ロビー/メニューなど、ユーザーが位置調整するUIを追加・変更するときは、Scene上のUIオブジェクトとして配置し、ランタイム側は既存要素へバインドして値更新とボタン接続だけを行う。フォールバック生成はScene要素がない場合の保険に留める。
 **Trigger**: AreaSurvivorsでロビー画面、HUD、建造メニュー、ステージパネル、ステータスパネルなどのUIを追加・移動・拡張するとき。
+
+2026-06-13: HUDのStage表示をScene上に配置せず、実行時生成・固定座標上書きに寄せていた
+**NG Action**: ユーザーがEditor上で位置調整したいHUD要素をSceneに置かず、実行時に作成したり、Scene上に存在してもコード側でRectTransformを固定値に戻した。
+**Correct Action**: AreaSurvivorsのHUD/ロビー/メニューなど調整対象UIは原則Scene上に配置し、ランタイム側は既存UIへのバインドと値更新に徹する。Scene上にあるUIの位置・サイズはコードで上書きしない。
+**Trigger**: AreaSurvivorsでHUD、ロビー、建造メニュー、ステージ表示、撃破数表示、リソース表示などのUIを追加・変更するとき。
+
+2026-06-15: 中心塔だけ個別offsetで位置調整しようとした
+**NG Action**: 中心塔やアップグレード後中心塔の位置ずれに対して、`position.y` や独自 `upgradedVisualOffset` を何度も調整し、根本原因であるRoot基準・中心セル・占有セル・Collider基準の不一致を先に解消しなかった。
+**Correct Action**: AreaSurvivorsの建造物・自然物・アップグレード表示は、`GridObjectVisual` の中心セル + footprint からRootを占有セル下端中央へ配置し、画像、Collider、Grid登録、青エリア判定を同じ基準にそろえる。個別Y補正を追加する前に、共通規格から漏れていないか確認する。
+**Trigger**: AreaSurvivorsで建造物、中心塔、監視塔、大型自然物、アップグレード後画像の位置ずれ、Colliderずれ、下端ずれを修正するとき。
+
+2026-06-15: PlayerプレハブのColliderを実行時コードで上書きしていた
+**NG Action**: ユーザーがPlayerプレハブ上でColliderを調整しているのに、`PlayerController.ConfigureFootCollider()` でランタイムに `GridObjectVisual.ConfigureCharacterCircle()` を呼び、Colliderを再設定していた。
+**Correct Action**: Playerや敵など、PrefabでCollider調整する前提のものはPrefab設定を正とする。実行時にColliderを補正する場合は、ユーザーがInspectorで調整した値を上書きしないか先に確認する。
+**Trigger**: AreaSurvivorsでプレイヤー、敵、キャラクターPrefabのCollider、当たり判定、足元判定を修正するとき。
+
+2026-06-15: 締め作業を定型化していなかった
+**NG Action**: 作業終了時のObsidian記録、スキル更新、AreaSurvivors本体と外部メモリrepoのcommit/pushを都度判断にしていた。
+**Correct Action**: ユーザーが「締め作業」「作業終了」「今日の作業終了」と依頼したら `area-survivors-closeout` skill を使い、Obsidian記録、必要なミス/ルール/スキル更新、AreaSurvivorsと `codex-external-memory` のcommit/pushをまとめて実施する。
+**Trigger**: AreaSurvivorsの作業終了、締め作業、Obsidian記録、コミット＆プッシュを依頼されたとき。
