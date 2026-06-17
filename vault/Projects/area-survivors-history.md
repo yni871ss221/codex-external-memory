@@ -158,3 +158,15 @@ AreaSurvivors の大きな作業履歴。次回開始時は通常 [[area-survivo
 - PlayerプレハブのColliderをランタイムで上書きしていた `PlayerController.ConfigureFootCollider()` を削除し、プレハブ上のCollider設定をそのまま使うようにした。
 - 中心塔のシルエット判定は、YSortを持つ遮蔽物では描画順だけでなく「遮蔽物の足元がプレイヤーより手前か」を必須条件にした。中心塔が手前にいないのにシルエットが出る問題を修正した。
 - `area-survivors-closeout` skill を追加した。今後、締め作業や作業終了時にはObsidian記録、スキル/ルール更新、AreaSurvivorsと外部メモリrepoのcommit/pushをまとめて行う。
+
+## 2026-06-17 建造物Prefab化・画像参照統合
+
+- 城壁/城門/バリスタ/監視塔/中心塔を、ゲーム内でTransformを加工する方式からPrefab上の表示を正とする方式へ寄せた。
+- 建造物Visualは、ランタイムでは原則positionのみを配置し、Scale/Rotation/表示比率はPrefabと処理済みSpriteで決める。
+- 建造中/アップグレード中の表示は、Yスケールで潰すのではなく、下から表示されるトリミング方式へ移行した。
+- 城壁と城門は3x1セル建造物へ変更した。横方向のみ配置し、縦柵とRキー回転は廃止した。
+- 旧DefensiveFence系、旧Fence画像、旧3D/ポリゴン仮素材、未使用Material/Meshを削除対象として整理した。
+- `Resources/Generated` と `Sprites/Generated` の二重配置を廃止し、ゲーム用生成Spriteは `Assets/AreaSurvivors/Sprites/Generated` に統一する方針にした。
+- 実行時ロードは `GeneratedSpriteLoader` + `GeneratedSpriteCatalog.asset` を経由する。Editor中は `AssetDatabase` で `Sprites/Generated` を優先し、ビルド時はカタログから読む。
+- 直接 `Resources.Load("Generated/... ")` を使う実装は避ける。通常ResourcesはConfigなど本来Resourcesであるものだけに限定する。
+- 検証: `Resources/Generated` の文字列参照とフォルダ実体が残っていないことを `rg` とファイル存在確認で確認。Unityバッチ検証は未実施。

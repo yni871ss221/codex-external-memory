@@ -40,3 +40,10 @@ related: [[Projects/area-survivors-current]], [[area-survivors-paper-billboard-f
 - 中心塔Rootを3x3占有セルの下端中央へ配置するようにした。
 - 通常中心塔、アップグレード中心塔、Collider、Grid登録、青エリア基準を同じ中心セルから計算するようにした。
 - 中心塔の位置ずれは、個別Y offsetではなくRoot基準の統一で解消した。
+
+## 2026-06-17 Prefab表示を正とする追加ルール
+
+- GridObjectVisual規格は「セル基準のRoot位置とCollider」を決めるためのもの。画像の比率補正やRotate補正をランタイムで行うためのものではない。
+- 建造物Prefabでは、通常表示、ゴースト、建造中表示、完成表示、アップグレード後表示を同じ下端アンカー/同じ幅基準でそろえる。
+- ランタイム側は建造物VisualのScale、Rotation、Y伸縮を原則変更しない。見た目が合わない場合は、処理済みPNGまたはPrefab内Transformを修正する。
+- アップグレード画像を追加する場合も、元画像とアップグレード画像の両方を同じ占有セル横幅で加工し、Prefab参照まで更新する。

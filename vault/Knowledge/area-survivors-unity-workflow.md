@@ -33,3 +33,10 @@ unicli exec PlayMode.Exit
 - `LoadSprite` は `Sprites/Generated` を優先して読むため、生成済み画像を置けばプロシージャルなフォールバック画像より優先される。
 - このPCではUniCLI CLI `v1.3.3` を `C:\Users\yni87\.local\bin\unicli\unicli.exe` に配置し、ユーザーPATHにも追加済み。Codex Desktop再起動前のシェルでは直接フルパスで呼び出せる。
 - Unity Editorを再起動するとき、ユーザーが引き続き操作するEditorは通常表示で起動する。非表示起動したEditorが `Temp/UnityLockfile` を保持すると、ユーザーがUnity Editorを開けないように見える。
+
+## 2026-06-17 Generated Sprite配置統合
+
+- ゲーム用の生成Spriteは `Assets/AreaSurvivors/Sprites/Generated` に統一する。`Assets/AreaSurvivors/Resources/Generated` へは新規配置しない。
+- ビルド時に必要な生成Spriteは `GeneratedSpriteCatalog.asset` に参照を持たせ、ランタイムは `GeneratedSpriteLoader` 経由で読む。
+- `Resources.Load("Generated/... ")` を新規追加しない。UI/歩行アニメ/マップ外画像/地面バリアントも `GeneratedSpriteLoader` を使う。
+- 画像差し替え時はPNGだけでなく、Prefab参照、Scene参照、TilePalette、Editor生成ツール、Catalogを必ず更新し、古いSprite/Source/Prefab/Tile/Metaを削除する。

@@ -152,3 +152,38 @@ related: [[area-survivors]], [[area-survivors-history]], [[area-survivors-unity-
 - 追加Editorメニュー: `Area Survivors/Map/Clear Saved Ground Tiles In 05_Game`、`Area Survivors/Map/Rebuild Ground Preview In Active Scene`。
 - 検証済み: UniCLI Compile `0 errors / 0 warnings`、`Gameplay_Prefab_Smoke` PASS、`Gameplay_Navigation_Default` PASS、`Gameplay_Map_Perimeter` PASS。
 - 次回以降は、大きな作業前に軽量化済みSceneをベースとして扱い、巨大Scene差分本文の読み込みは避ける。
+
+## 2026-06-15 縦長マップ化の方針
+
+- 今後のゲーム性は、周囲から迫る敵を防ぐ形式から、縦長マップで上から迫る敵を防ぎつつ、下方向の資源を回収して拠点を強化する形式へ変更する。
+- マップは横3チャンク、縦11チャンクを初期案とする。中心チャンクを基準に上下5チャンクずつ並べる。
+- 敵出現は中心チャンクのすぐ上を1つ目として、上3つ目のチャンク全体から30秒ごとにランダムな出現位置を選ぶ。
+- 上方向の地面見た目は当面変更しない。自然物だけ、敵に占領された枯れた大地のイメージとして1セル木と2セル石を点在させる。
+- 下方向と左右方向の自然物は、従来通り10セル先、20セル先などの距離帯配置を維持する。
+
+## 2026-06-15 縦長マップの自然物配置ルール更新
+
+- 横1チャンク、縦11チャンクで一旦進める。
+- 自然物配置は従来の全方位距離帯ランダムから、チャンク単位の配置へ変更する。
+- 中心チャンクは塔から10〜20セル範囲に1セル木x3、1セル岩x3を配置する。
+- 下方向はチャンクが進むほど大型資源を増やす。
+- 上方向の敵側チャンクは、1セル木、1セル岩、2セル森、2セル岩を各3個のみ配置する。
+
+## 2026-06-17 建造物Prefab化・画像参照統合
+
+- 城壁/城門/バリスタ/監視塔/中心塔を、ゲーム内でTransformを加工する方式からPrefab上の表示を正とする方式へ寄せた。
+- 建造物Visualは、ランタイムでは原則positionのみを配置し、Scale/Rotation/表示比率はPrefabと処理済みSpriteで決める。
+- 建造中/アップグレード中の表示は、Yスケールで潰すのではなく、下から表示されるトリミング方式へ移行した。
+- 城壁と城門は3x1セル建造物へ変更した。横方向のみ配置し、縦柵とRキー回転は廃止した。
+- 旧DefensiveFence系、旧Fence画像、旧3D/ポリゴン仮素材、未使用Material/Meshを削除対象として整理した。
+- `Resources/Generated` と `Sprites/Generated` の二重配置を廃止し、ゲーム用生成Spriteは `Assets/AreaSurvivors/Sprites/Generated` に統一する方針にした。
+- 実行時ロードは `GeneratedSpriteLoader` + `GeneratedSpriteCatalog.asset` を経由する。Editor中は `AssetDatabase` で `Sprites/Generated` を優先し、ビルド時はカタログから読む。
+- 直接 `Resources.Load("Generated/... ")` を使う実装は避ける。通常ResourcesはConfigなど本来Resourcesであるものだけに限定する。
+- 検証: `Resources/Generated` の文字列参照とフォルダ実体が残っていないことを `rg` とファイル存在確認で確認。Unityバッチ検証は未実施。
+
+## 2026-06-17 締め検証
+
+- `git diff --check` PASS。
+- `unicli exec Compile` PASS。Unity Compile `0 errors / 0 warnings`。
+- `Resources/Generated` フォルダ実体なし、`Resources/Generated` 文字列参照なしを確認。
+- 変更した `area-survivors-asset-import` skill は `quick_validate.py` PASS。

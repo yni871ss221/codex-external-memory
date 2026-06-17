@@ -103,3 +103,13 @@ related: [[Preferences/language]]
 **NG Action**: 作業終了時のObsidian記録、スキル更新、AreaSurvivors本体と外部メモリrepoのcommit/pushを都度判断にしていた。
 **Correct Action**: ユーザーが「締め作業」「作業終了」「今日の作業終了」と依頼したら `area-survivors-closeout` skill を使い、Obsidian記録、必要なミス/ルール/スキル更新、AreaSurvivorsと `codex-external-memory` のcommit/pushをまとめて実施する。
 **Trigger**: AreaSurvivorsの作業終了、締め作業、Obsidian記録、コミット＆プッシュを依頼されたとき。
+
+2026-06-17: Spriteの比率ずれをランタイムScale/Rotateで補正しようとした
+**NG Action**: バリスタや城壁/城門の通常・アップグレード画像で、Sprite加工時の幅基準が揃っていない問題を、Prefab/実行時のScale YやRotate Xで補正しようとした。
+**Correct Action**: 建造物画像は、背景除去→可視範囲トリミング→占有セル横幅 `セル数 * 64px` にアスペクト比維持でリサイズする。高さはセルに収めず、Prefabで下端と横幅を合わせる。ランタイムでScale/Rotationを変更しない。
+**Trigger**: AreaSurvivorsで建造物、アップグレード建造物、建造予約ゴースト、建造中表示、完成表示の画像を追加・差し替えするとき。
+
+2026-06-17: Resources/GeneratedとSprites/Generatedを二重管理した
+**NG Action**: `Sprites/Generated/WoodenWall.png` を差し替えた一方で、PrefabやSceneが `Resources/Generated/WoodenWall.png` のGUIDを参照したままになり、見た目が変わらない・古い画像が残る状態を作った。
+**Correct Action**: 生成済みゲーム用Spriteは `Sprites/Generated` に統一し、実行時は `GeneratedSpriteLoader` と `GeneratedSpriteCatalog.asset` で読む。画像差し替えでは、Prefab参照・Scene参照・Editorツール・Catalog・古いファイル削除まで一括で確認する。
+**Trigger**: AreaSurvivorsで画像差し替え、Prefab化、Resources/Sprites配置整理、古いアセット削除を行うとき。
