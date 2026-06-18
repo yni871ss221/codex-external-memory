@@ -187,3 +187,15 @@ related: [[area-survivors]], [[area-survivors-history]], [[area-survivors-unity-
 - `unicli exec Compile` PASS。Unity Compile `0 errors / 0 warnings`。
 - `Resources/Generated` フォルダ実体なし、`Resources/Generated` 文字列参照なしを確認。
 - 変更した `area-survivors-asset-import` skill は `quick_validate.py` PASS。
+
+## 2026-06-18 現在状態
+
+- HUD、建造メニュー、スキルツリーなどユーザーがEditorで調整したいUIは、Scene上の配置・画像参照を正とする方針に更新済み。
+- スキルツリーは `04_Upgrades.unity` 上でSceneオブジェクトとして管理し、Runtimeでは `UpgradeScreen` が既存の `SkillNodeView` / `SkillLinkSegment` をバインドして状態更新する。
+- スキルツリーのジャンルは「プレイヤー」「建造物」「中心塔」。背景パネル、ジャンルラベル、ノード、リンク線はScene上に存在する。
+- `SkillTreeLayoutValidator` で、重複ID、ノード重なり、リンク角度、前提不整合を検証できる。
+- 武器強化は武器Lv制へ移行済み。武器Lvは初期1、最大10。武器ごとにLv別最終値を `GameConfig` のInspectorで設定する。
+- 旧武器永続強化や伐採/採掘個別強化など、現在のツリーに置かないUpgradeTypeは削除済み。
+- 攻撃判定は見た目に合わせやすいCollider中心へ移行中。Knight斬撃など隠れたOverlap判定は残さない方針。
+- 建造物やアップグレード後表示はPrefab上のVisual参照を正とし、RuntimeのSprite差し替えを避ける。
+- 最終検証: `unicli exec Compile` 0 errors / 0 warnings、Console Error 0件。

@@ -113,3 +113,8 @@ related: [[Preferences/language]]
 **NG Action**: `Sprites/Generated/WoodenWall.png` を差し替えた一方で、PrefabやSceneが `Resources/Generated/WoodenWall.png` のGUIDを参照したままになり、見た目が変わらない・古い画像が残る状態を作った。
 **Correct Action**: 生成済みゲーム用Spriteは `Sprites/Generated` に統一し、実行時は `GeneratedSpriteLoader` と `GeneratedSpriteCatalog.asset` で読む。画像差し替えでは、Prefab参照・Scene参照・Editorツール・Catalog・古いファイル削除まで一括で確認する。
 **Trigger**: AreaSurvivorsで画像差し替え、Prefab化、Resources/Sprites配置整理、古いアセット削除を行うとき。
+
+2026-06-18: スキルツリー/HUD系UIをRuntime生成で復活させた
+**NG Action**: ユーザーがScene上でラベルやHUD項目を削除・調整した後に、`UpgradeScreen` などのRuntimeフォールバック生成で旧ラベルや線、UI項目を復活させた。
+**Correct Action**: AreaSurvivorsのHUD、建造メニュー、スキルツリーなどEditor調整対象UIはSceneを正とする。Runtimeは既存Sceneオブジェクトのバインド、状態更新、ボタン接続だけを行う。Scene要素がない場合は勝手に生成せず、必要ならエラーや警告で不足を知らせる。
+**Trigger**: HUD、ロビー、建造メニュー、スキルツリー、ステータス表示、ジャンルラベル、リンク線など、ユーザーがScene上で配置・削除・調整するUIを扱うとき。

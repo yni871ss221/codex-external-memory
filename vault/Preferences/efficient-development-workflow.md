@@ -71,3 +71,11 @@ related: [[Preferences/testing-workflow]], [[Knowledge/area-survivors-unity-work
 - Obsidianへ、作業履歴、現在状態、再発防止のミス、設計判断、スキル/ルール更新を記録する。
 - その後、AreaSurvivors repo と外部メモリ repo の両方で `git status`、必要な差分確認、commit、pushを行う。
 - 外部メモリrepoのcommit/pushを省略しない。省略せざるを得ない場合は理由を明示する。
+
+## 2026-06-18 トークン節約ルール追加
+
+- UniCLI `Eval` に複雑な引用符つきC#を直接渡さず、Scene操作やValidator実行は一時Editor Runnerを作成して短いEvalで呼ぶ。
+- 作業後、一時Runnerと `.meta` は必ず削除する。
+- `git status` / `git diff` は対象パス、`--stat`、`--name-only`、行数制限を優先し、巨大Scene差分や広い履歴を不用意に読まない。
+- スキルツリーやHUDの見た目調整は、スクリーンショット反復よりValidatorとScene上の座標・親子関係確認を優先する。
+- 長いスレッドでトークン消費が大きい場合は、新規チャットへ移る提案を行い、`AGENTS.md` とObsidian要点だけを読み込んで続行する。

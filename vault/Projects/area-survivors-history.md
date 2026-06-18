@@ -170,3 +170,18 @@ AreaSurvivors の大きな作業履歴。次回開始時は通常 [[area-survivo
 - 実行時ロードは `GeneratedSpriteLoader` + `GeneratedSpriteCatalog.asset` を経由する。Editor中は `AssetDatabase` で `Sprites/Generated` を優先し、ビルド時はカタログから読む。
 - 直接 `Resources.Load("Generated/... ")` を使う実装は避ける。通常ResourcesはConfigなど本来Resourcesであるものだけに限定する。
 - 検証: `Resources/Generated` の文字列参照とフォルダ実体が残っていないことを `rg` とファイル存在確認で確認。Unityバッチ検証は未実施。
+
+## 2026-06-18 HUD/建造物/武器/スキルツリー整理
+
+- バリスタ矢、建造完了キラキラ、Build Gauge削除、塔ステータス画像、建造メニューアイコン、建造物Prefab画像参照を調整した。
+- HUD/建造メニュー/ステータス/スキルツリーはScene上の配置・参照を正とし、Runtime側は既存要素のバインド、値更新、表示切替に寄せた。
+- `GeneratedSpriteLoader.Load` による静的建造物Visual差し替えを削除し、Prefab/Scene参照へ移行した。
+- チャンクセル数を25セルへ変更し、中心セルを明確化した。
+- 武器レベル制を導入し、武器ステータスは武器Lvごとの最終値をInspector設定する形へ整理した。旧攻撃力/間隔/ノックバック等の永続強化UpgradeTypeは削除した。
+- Knight斬撃、火球/弾/爆発などの攻撃判定を、見た目と一致しやすいCollider中心の方式へ寄せた。通常攻撃のPixelBurst着弾演出は削除した。
+- ステータスアイコンを追加し、HUD/レベルアップ/スキルツリーへ反映した。HUDアイコンはRuntime生成ではなくScene配置へ戻した。
+- `AGENTS.md` を作成し、AreaSurvivors固有の作業ルール、Scene疎結合、HUD禁止事項、検証・トークン節約ルールを記録した。
+- スキルツリーをSceneベースの `SkillNodeView` / `SkillLinkSegment` / `SkillTreeLayoutValidator` / `SkillTreeViewportController` 構成へ移行した。
+- スキルツリーはプレイヤー、建造物、中心塔の3ジャンルへ整理し、ユーザーがScene上で配置調整したノードに合わせて親子関係とSceneリンク線を更新した。
+- `UpgradeScreen` の旧Runtimeフォールバック生成を削除し、Scene上の既存スキルツリーへバインドするだけにした。
+- 検証: `unicli exec Compile` は最終0 errors / 0 warnings、Console Error 0件。

@@ -40,3 +40,11 @@ unicli exec PlayMode.Exit
 - ビルド時に必要な生成Spriteは `GeneratedSpriteCatalog.asset` に参照を持たせ、ランタイムは `GeneratedSpriteLoader` 経由で読む。
 - `Resources.Load("Generated/... ")` を新規追加しない。UI/歩行アニメ/マップ外画像/地面バリアントも `GeneratedSpriteLoader` を使う。
 - 画像差し替え時はPNGだけでなく、Prefab参照、Scene参照、TilePalette、Editor生成ツール、Catalogを必ず更新し、古いSprite/Source/Prefab/Tile/Metaを削除する。
+
+## 2026-06-18 スキルツリーScene編集ルール
+
+- スキルツリーのノード位置、ジャンルパネル、ラベル、アイコン、リンク線はScene上を正とする。
+- `UpgradeScreen` はScene上の既存 `SkillNodeView` と `SkillLinkSegment` をバインドし、購入状態・表示色・ボタン接続だけを更新する。Runtimeでノード、ラベル、リンク線を生成しない。
+- ユーザーがScene上でノードを配置変更した後に導線整理を依頼した場合は、一時Editor Runnerで `SkillNodeView.linkRoutes` と `SkillLinkSegment` を更新し、作業後Runnerと `.meta` を削除する。
+- 恒久メニュー化を求められるまでは、配置整理のためのEditorメニューやスキル化は行わない。
+- 旧カテゴリラベルやフォールバックUI生成を復活させない。必要なジャンルラベルはScene上に直接配置する。
