@@ -48,3 +48,11 @@ unicli exec PlayMode.Exit
 - ユーザーがScene上でノードを配置変更した後に導線整理を依頼した場合は、一時Editor Runnerで `SkillNodeView.linkRoutes` と `SkillLinkSegment` を更新し、作業後Runnerと `.meta` を削除する。
 - 恒久メニュー化を求められるまでは、配置整理のためのEditorメニューやスキル化は行わない。
 - 旧カテゴリラベルやフォールバックUI生成を復活させない。必要なジャンルラベルはScene上に直接配置する。
+
+## 2026-06-20 建造中Visual/Serialized field削除時の確認
+
+- RuntimeクラスからSerialized fieldを削除しただけでは、Prefab YAMLに旧フィールド名が空参照として残る場合がある。
+- 旧フィールドや旧子オブジェクトを削除した後は、対象Prefabを一時Editor Runnerで `PrefabUtility.LoadPrefabContents` -> `PrefabUtility.SaveAsPrefabAsset` して再保存し、不要なSerialized fieldを落とす。
+- 一時Runnerは `Assets/AreaSurvivors/Editor/Temporary*.cs` として作成し、`Menu.Execute --menuItemPath ...` で実行する。実行後は `.cs` と `.meta` を削除し、`AssetDatabase.Import --forceUpdate true` とCompileでUnity側の参照を更新する。
+- 最後に `rg` で旧子名、旧Serialized field名、旧Sprite名を `*.cs` / `*.prefab` / `*.unity` / `*.asset` へ横断検索する。
+- Unity Prefab YAMLは空フィールド行で `git diff --check` のtrailing whitespaceが大量に出る場合があるため、基本はコード対象に絞って `git diff --check` し、Prefabは残存キーワード検索とUnity Compile/Consoleで確認する。
