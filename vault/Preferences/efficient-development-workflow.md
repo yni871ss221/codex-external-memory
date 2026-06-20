@@ -79,3 +79,11 @@ related: [[Preferences/testing-workflow]], [[Knowledge/area-survivors-unity-work
 - `git status` / `git diff` は対象パス、`--stat`、`--name-only`、行数制限を優先し、巨大Scene差分や広い履歴を不用意に読まない。
 - スキルツリーやHUDの見た目調整は、スクリーンショット反復よりValidatorとScene上の座標・親子関係確認を優先する。
 - 長いスレッドでトークン消費が大きい場合は、新規チャットへ移る提案を行い、`AGENTS.md` とObsidian要点だけを読み込んで続行する。
+
+## 2026-06-20 トークン対策の運用フェーズ
+
+- 通常の調査・検証では `guarded-command`、`safe-*`、`safe-unity`、Reporter、`token-health` を優先する。
+- 作業開始は `start-token-check.ps1`、作業終了は `end-token-check.ps1` を使う。
+- 日常用の消費比較は `token-health.ps1` と `TokenReports/token-daily-baseline.json` を使う。
+- Heavyベンチ `token-benchmark-heavy.ps1` は巨大出力退行を明示確認したい場合だけ実行する。
+- TokenReportsは `token-report-summary.ps1 -Kind ... -Since ...` で必要範囲を絞り、古いJSONLは `archive-token-reports.ps1` で削除せずアーカイブする。

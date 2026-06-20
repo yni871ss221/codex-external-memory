@@ -1,225 +1,124 @@
 ---
-date: 2026-06-11
-tags: [project, current, unity, game, area-survivors]
-project: area-survivors
-related: [[area-survivors]], [[area-survivors-history]], [[area-survivors-unity-workflow]], [[game-art-style]], [[area-survivors-2-5d-style]], [[area-survivors-stencil-occlusion-silhouette]]
+title: AreaSurvivors Current
+type: project-current
+updated: 2026-06-20
+tags:
+  - project/area-survivors
+  - codex/current
+related:
+  - "[[area-survivors-token-workflow]]"
+  - "[[area-survivors-history]]"
 ---
 
 # AreaSurvivors Current
 
-## 現在の開始地点
+## 現在の状態
 
-- ローカル作業パス: `D:\develop\unity_workspace\AreaSurvivors`
-- ブランチ: `feature/01_GameSystemInit`
-- 最新Push済みコミット: `561a0dd Add stage two and automated buildings`
-- 2026-06-12時点で、大工小屋・作業小屋・監視塔・ステージ2・ロビーScene配置化までPush済み。
+- Repository: `C:\Develop\unity_workspace\AreaSurvivors`
+- Unity: `2022.3.62f3`
+- Main Scene: `Assets/AreaSurvivors/Scenes/05_Game.unity`
+- Gameplay Test Scene: `Assets/AreaSurvivors/Scenes/90_GameplayTest.unity`
+- Current Branch: `feature/02_GameSystemUpdate`
+- Recent Commits:
+  - `39e14eb` Add token report freshness tools
+  - `8ed7eed` Split daily token health from heavy benchmarks
+  - `03d32b9` Add token workflow automation
+  - `49313da` Add Unity token guardrails
+  - `f897090` Center build mode camera on tower
+- History: [[area-survivors-history]]
+- Token workflow: [[area-survivors-token-workflow]]
 
-## 現在有効なゲーム方針
+## 重要ルール
 
-- 2Dの移動、Collider、領地塗りロジックを維持し、見た目は斜め見下ろしの2.5D風にする。
-- フィールド上の主要オブジェクトは遠目で判別しやすい、太い黒アウトライン付きのアイコン調ドット絵を使う。
-- 背景は大きな草原チャンク画像を敷き、セルグリッドと領地色を上に重ねる。
-- 木、石、森、山などの大きなランドマークはランダム配置だが、中心塔からの距離帯ごとの配置数をInspectorで調整できるようにする。
-- 8セル森、8セル山は採取不可。障害物として残す。
+- ユーザーへの説明、作業報告、Obsidian記録は日本語で行う。
+- 作業前に `AGENTS.md` を読む。AreaSurvivorsの恒久ルールは `AGENTS.md` を正とする。
+- Scene/Prefab/HUDはEditor調整を尊重し、Runtimeで既存配置やSpriteを固定値へ戻さない。
+- 既存の未コミット変更はユーザーまたは前作業のものとして扱い、勝手に戻さない。
+- 画像素材追加・差し替えは、必要に応じてAreaSurvivors用skillを使う。
 
-## 現在有効な建造仕様
+## トークン節約ルール
 
-- 建造物は固定数ではなく、木・石資源を消費して建造予約する。
-- 予約配置時に資源を即消費する。
-- 建造キャンセルは今後実装予定。実装時は全額返却予定。
-- 建造予約中の建造物は破壊されない前提。
-- バリスタ、柵、塔などの画像を割り当てる場合は、ゲーム内アウトラインを適用する。
-- 必要な画像が出た場合、ポリゴンの組み合わせで無理に作らず、寸法付きで画像生成を依頼する。
+- 広い `git status`、広い `git diff`、巨大Scene YAML、広すぎる `rg`、高解像度スクショ反復を避ける。
+- `git status` は必要時のみ、可能なら対象パス指定で実行する。
+- `git diff` は原則対象ファイル指定、または `--name-only` / `--stat` / 件数制限を使う。
+- Unity Scene/Prefab作業では、YAML全文確認より専用Validator、Reporter、Compile、Console Error確認を優先する。
+- UI/Scene見た目調整では、座標表・グリッド・Validatorで潰してから、初回と最終を中心にスクリーンショット確認する。
+- 長いスレッドでトークン消費が大きくなった場合は、新規チャットへ移ることを提案し、`AGENTS.md`、このノート、現在ブランチ、直近コミット、直近検証結果だけを読み込んで続行する。
 
-## 現在有効な採取仕様
+## Token Tooling
 
-- 木、石オブジェクトはプレイヤーが触れている間、伐採・採掘できる。
-- 採取できるのは、青いエリアに接している木、石のみ。
-- 採取中は対象上に採取ゲージを表示する。
-- 伐採中は斧、採掘中はつるはしを表示する。
-- 1秒ごとに資源を獲得し、初期値は `2`。
-- 取得時は対象上に「取得数 + 丸太/石アイコン」のポップアップを出す。
-- 採取しきった1/2/4セルの木・石は消滅する。
-- 最大採取量:
-  - 1セル木・石: `100`
-  - 2セル木・石: `200`
-  - 4セル木・石: `400`
-  - 8セル森・山: 採取不可
-- 採取量、初期所持資源、建造コストは将来的にスキルツリーで強化する可能性があるため設定パラメータ化する。
+- `Tools/TokenUsage/Safe-Command.ps1`
+  - 大量出力が疑われるコマンドを包む。
+  - 出力トークンを概算し、閾値超過時にブロックまたはトリムする。
+- `Tools/TokenUsage/Run-TokenBenchmark.ps1`
+  - 固定の高出力コマンド群で、改善前後の推定トークン量を比較する。
+  - ベースラインは `TokenReports/token-benchmark-baseline.json`。
+- `Tools/TokenUsage/Invoke-AreaSafeCommand.ps1`
+  - `Status`、`DiffStat`、`DiffNameOnly`、`Search`、`Read` などの日常調査入口。
+  - 生の広い `git diff` / `rg` / `Get-Content` の代わりに使う。
+- `Tools/TokenUsage/Invoke-AreaTokenHealth.ps1`
+  - ベンチマークを短いヘルスチェックとして表示する。
+  - `-FailOnIncrease` でトークン増加検知を終了コードにできる。
+- Short wrappers:
+  - `safe-status.ps1`、`safe-diff.ps1`、`safe-search.ps1`、`safe-read.ps1`、`safe-unity.ps1`、`token-health.ps1`
+- `Tools/TokenUsage/Test-AreaCommandRisk.ps1`
+  - 生の危険コマンドを実行前に判定する。
+- `Tools/TokenUsage/guarded-command.ps1`
+  - 既知の危険コマンドを安全ラッパーへ自動変換して実行する。
+- `Tools/TokenUsage/Convert-AreaCommandToSafe.ps1`
+  - 生コマンドがどの安全コマンドへ変換されるか確認する。
+- `Tools/TokenUsage/token-report-summary.ps1`
+  - TokenReportsから重いコマンド、blocked件数、high/critical件数を要約する。
+  - `-Kind`、`-Since`、`-IncludeBenchmark` で分析対象を絞る。
+- `Tools/TokenUsage/archive-token-reports.ps1`
+  - 古いJSONLを `TokenReports/Archive/` へ移動する。
+- `Tools/TokenUsage/token-health.ps1`
+  - 日常用の軽量チェック。`TokenReports/token-daily-baseline.json` と比較する。
+- `Tools/TokenUsage/token-benchmark-heavy.ps1`
+  - 過去の巨大出力固定ケース用。明示時だけ実行する。
+- `Tools/TokenUsage/safe-unity-search.ps1`
+  - CLIからScene/Prefab検索を実行し、保存レポートのパスだけ返す。
+- `Tools/TokenUsage/start-token-check.ps1` / `end-token-check.ps1`
+  - 作業開始・終了時の軽量チェック入口。
+- 詳細運用: [[area-survivors-token-workflow]]
+- Unity menu: `Area Survivors/Reports/C# Symbol Overview`
+- Unity menu: `Area Survivors/Reports/C# Symbol Index`
+  - C#構造探索用の軽量レポート。
+  - 広い検索や大量ファイル読み込みの代替に使う。
+- Unity menu: `Area Survivors/Reports/Scene Prefab Overview`
+- Unity menu: `Area Survivors/Reports/Scene Prefab Structure`
+  - Scene/Prefab構造探索用の軽量レポート。
+  - Scene/Prefab YAML全文読み込みの代替に使う。
+- Unity menu: `Area Survivors/Reports/Scene Prefab Search`
+  - GameObject名、Component名、RectTransform情報を検索語で絞る。
+- Reporter output: `TokenReports/UnityReports/`
+- Screenshot lite output: `TokenReports/Screenshots/`
 
-## 現在有効なHUD仕様
+## 最近の検証
 
-- HUD項目は可能な限りScene上に配置し、Editorで位置調整できるようにする。
-- ロビー画面もHUDと同様に `03_Lobby.unity` のScene上へ配置し、ランタイム側は既存UIへバインドして状態更新とボタン接続だけを行う。
-- 左上にプレイヤー枠、武器枠、HP/XPゲージ、ステータス枠を置く。
-- 上部中央に経過時間と撃破数をパネル表示する。
-- 撃破数の右に木・石所持数パネルを置き、丸太/石アイコン + 所持数で表示する。
-- 右側に中心塔ステータスを置き、塔画像、塔HPゲージ、HP数値を表示する。
-- 旧XPバーなど不要になったHUDは削除済み。
-- パネル外枠は四辺の子オブジェクトではなく、`UiBoxOutline` のようなコンポーネントで自動的に縁取りする。
+- `Tools/TokenUsage/end-token-check.ps1`: 成功。
+- `safe-unity Compile`: 成功、`0 errors / 0 warnings`。
+- `ConsoleErrors --maxCount 30`: エラー表示なし。
+- `token-health`: 日常用5件比較で `0 increased, 0 improved`。
+- Console Error確認: エラーログ表示なし。
+- Heavyベンチは `token-benchmark-heavy.ps1` へ分離済み。通常の開始/終了チェックでは実行しない。
 
-## 直近の実装済み
+## 建造画面カメラ修正
 
-- カメラをプレイヤー中心追従にし、マップ端では設定範囲内へクランプするようにした。
-- マップを縦方向へ拡張し、外周描画と進行不可境界を調整した。
-- HUDは通常時に背景を半透明とし、プレイヤーと重なった場合は内容を含む全体を薄くする。レベルアップ画面は透明化対象外。
-- キャラクターが塔、建造物、自然物へ隠れた部分だけシルエット表示するステンシル方式を追加した。
-- シルエットの広域重なり判定は、斜めカメラでのずれを避けるためスクリーン空間で行う。
-- ダメージ、回復、資源取得ポップアップは遮蔽物より前面へ固定表示する。
-- 詳細は [[area-survivors-stencil-occlusion-silhouette]] を参照。
-- プレイヤー/武器ステータスの基礎値、永続強化量、ラン中強化量、武器固有範囲を `GameConfig` から調整できるようにした。
-- HUD左側ステータス欄に、既存の攻撃/間隔/速度/塗りに加えて、復活時間、弾速、射程/範囲を表示するようにした。
-- HUD項目はPlay中に生成せず、`05_Game.unity` のScene上へ配置し、ランタイム側は既存要素にバインドする方針を再確認した。
-- 資源タイプ `ResourceType` を追加。
-- `GameConfig` に初期資源、建造コスト、採取量などの設定を追加。
-- `HarvestableResource` と `HarvestResourcePopup` を追加。
-- 木・石ランドマークへ採取情報を付与。
-- 斧、つるはし、ハンマー、丸太、石、経験値オーブ、岩ランドマーク画像を追加。
-- 採取ツールと採取ゲージをランドマークより手前に表示するようSortingを調整。
-- 木・石取得表示は最前面に近いSortingへ調整。
-- 武器は敵より前面に出るよう `WeaponSortingOrders` を追加。
-- `StatBlock` と `PlayerStats` を追加し、基礎値、永続強化、ラン中強化を合成した現在値として扱うようにした。
-- 新規ステータスとして、ノックバック、防御力、経験値獲得量、体力自動回復、作業速度、資源獲得量を追加。
-- ノックバックは敵のみを対象にし、`knockback * knockbackForceUnit` を `KnockbackReceiver` へ渡す。
-- 防御力は受けるダメージから差し引き、0ダメージでも命中確認用にダメージ表記を出す。
-- 経験値獲得量は `1.0x` 表記で、小数経験値を `GameManager` 内に蓄積して切り捨てロスを防ぐ。
-- 体力自動回復は `AutoRegeneration` を `Health` に組み合わせる共通方式にし、現状はプレイヤーのみ値を持つ。
-- 最大HP増加時は全回復せず、増えた最大HP分だけ `Health.Heal` で回復する。
-- 作業速度は建造進捗、伐採、採掘に適用する。建造ゲージ減少には適用しない。
-- 資源獲得量は採取1tickごとの木・石獲得量へ加算する。
-- HUD左側ステータス欄に、ノックバック、防御力、経験値倍率、自動回復、作業速度、資源獲得量をScene上の項目として追加した。
-- スキルツリーに上記6ステータスの永続強化ノードを追加した。
-- 建造物「大工小屋」を追加した。
-- 大工小屋はスキルツリーの `UnlockCarpenterHut` で解放され、建造メニュー4番に表示される。
-- 初期コストは木30・石20。1セル建造物として配置する。
-- 完成後、大工小屋と青いエリアで接続している未完成の建造予約へ自動建造作業を加える。
-- 自動建造速度は大工小屋1軒あたり初期プレイヤー作業速度の約1/10相当 (`0.1x`)。完成済み大工小屋が複数ある場合は、2軒で2倍、3軒で3倍のように軒数分だけ加算される。プレイヤー接触時はプレイヤー分と大工小屋分の両方が進む。
-- 大工小屋画像はGoogle Drive配置画像 `ChatGPT Image 2026年6月10日 22_14_28.png` を原本として `Assets/AreaSurvivors/Sprites/External/CarpenterHutSource.png` に残し、背景透過・トリミング・256px化した処理済み画像を `Assets/AreaSurvivors/Sprites/Generated/CarpenterHut.png` として取り込んだ。
-- 建造物「作業小屋」を追加済み。スキルツリー解放後に建造可能。初期コストは木30・石20。青いエリアで接続している自然物から、共通自動処理タイマーで5秒ごとに木・石を最大1種類ずつ採取する。自然物の残量を減らし、プレイヤー採取と同様に資源ポップアップを出す。
-- 作業小屋用スキルとして「自動獲得速度上昇」と「自動獲得量増加」を追加済み。速度は最大2回で5秒ごとから3秒ごとまで短縮。獲得量は最大2回で木・石それぞれ3ずつまで増加。
-- 建造物「監視塔」を追加済み。スキルツリー解放後に建造可能。初期コストは木50・石50、初期HP100、2x2セル扱い。共通自動処理タイマーで2秒ごとに周囲10セル内の最も近い青以外のセルへ、プレイヤーが踏んだ時と同じ塗り判定を付与する。敵への攻撃はしない。
-- 大工小屋と作業小屋の初期HPは50。監視塔・大工小屋・作業小屋はいずれもバリスタや柵と同様に敵衝突でダメージを受ける。
-- バリスタ、横柵、縦柵、大工小屋、作業小屋、監視塔、および自然物系8件は、画像の下端を基準に揃える下端アンカー方式へ寄せた。ズーム時のカメラ角度差で下端がずれて見える問題は、監視塔で下端アンカー化して改善した。
-- 建造中のハンマー、斧、つるはしは対象オブジェクトのスケールに引きずられないよう、見た目サイズを揃える。自動建造中も接触建造中も対象上に表示する。
-- 建造メニューは左から `1 横柵`、`2 縦柵`、`3 バリスタ`、`4 監視塔`、`5 大工小屋`、`6 作業小屋` の順。ロック中の建造物は画像を表示せず、解放後に表示する。
-- 建造アナウンスは建造パネル内の建造スペース前に配置し、背面パネルより手前に表示する。
-- ステージ2を追加済み。初回ステージ1クリア時はクリア画面で「ステージ2がアンロックされました」を表示して終了し、以後はステージ1ボス撃破後にステージ2へ遷移する。
-- ステージ2はHUD時間を5:00から再開し、10:00でゴブリンロードが出現する。敵はゴブリン、オーガ、ゴブリンロード。HP/攻撃力はステージ1対応敵の約2倍、移動速度は現状ステージ1相当。
-- クリア済みステージはロビーのステージパネルで倍速チェックを表示する。倍速時はそのステージの経過時間と敵移動速度が2倍、プレイヤー速度など他パラメータは通常通り。
-- ロビー画面には4ステージ分の進行パネルをScene配置。未解放ステージはボス画像をシルエット/伏せ表示、クリア済みは `CLEAR` を表示する。
-- テスト用にステージ2開始ボタン、スキル初期化、トークン+99999を追加済み。
+- 建造画面を開いたとき、中心塔が画面中央に来るように調整済み。
+- Key Files:
+  - `Assets/AreaSurvivors/Scripts/Game/BuildModeCameraController.cs`
+  - `Assets/AreaSurvivors/Scripts/Game/GameManager.cs`
+- Commit: `f897090 Center build mode camera on tower`
 
-## 検証
+## トークン削減対応
 
-- 2026-06-10: 中心塔と山への部分重なりで、画像と重なった部分だけシルエット表示されることを確認。
-- 2026-06-10: 塔上のダメージ数値が塔画像より前面へ表示されることを確認。
-- 2026-06-10: UniCLI Compile `0 errors / 0 warnings`、共通ナビゲーションGameplayTest成功、Console Error `0件`。
-- 2026-06-08: ステータス設定化とHUD追加後、UniCLI Compile `0 errors / 0 warnings`、PlayMode Errorログ `0件`。
-- 2026-06-08: 左HUD追加項目をScene上へ配置し直し、ランタイム動的生成を停止。UniCLI Compile `0 errors / 0 warnings`、PlayMode Errorログ `0件`。
-- 2026-06-08: 新規ステータス6種、ノックバック、防御、自動回復、経験値小数蓄積、作業速度/資源獲得反映後、UniCLI Compile `0 errors / 0 warnings`、PlayMode Errorログ `0件`。
-- 直近の変更後、UniCLI Compile は `0 errors / 0 warnings` を確認済み。
-- 2026-06-11: 大工小屋追加後、UniCLI Compile `0 errors / 0 warnings`、`Gameplay_Prefab_Smoke` PASS、Console Error `0件`。
-- 2026-06-11: 大工小屋画像の背景透過/縮小と建造メニュー4番スロットの高さ補正後、UniCLI Compile `0 errors / 0 warnings`、`Gameplay_Prefab_Smoke` PASS。
-- 2026-06-12: ステージ2、大工小屋、作業小屋、監視塔、下端アンカー、ロビーScene配置化を含む大規模変更後、Unity Editorログで `error CS` / 例外なしを確認。バッチ実行はUnity Editor起動中のため同一プロジェクトロックで不可。
-- PlayMode確認は変更内容に応じて実施する。
+- `AGENTS.md` にトークン節約運用ルールを追記済み。
+- Safe/guarded command、safe-unity、Reporter保存、日常用token-health、Heavyベンチ分離、TokenReports鮮度管理を追加済み。
+- Latest commit: `39e14eb Add token report freshness tools`
 
-## 次の作業候補
+## 次にやるとよいこと
 
-- シルエット方式を追加される新規建造物・自然物にも `OcclusionMaskSource` で適用する。
-- カメラ端、外周描画、HUD重複透明化を複数解像度で確認する。
-- 採取表示、採取ゲージ、斧/つるはしのサイズと前後関係をGame Viewで再確認する。
-- 資源消費型建造のUI表記をさらに分かりやすくする。
-- 建造キャンセルと資源全額返却を実装する。
-- スキルツリーで資源・採取・建造関連パラメータを強化可能にする。
-
-## 2026-06-15 現在の追加状態
-
-- 中心塔アップグレードが実装済み。コストは木300・石300。完了時に最大HP450、回復量+3、大砲攻撃力+10、爆発範囲2倍、周囲15セル即時青化。
-- 中心塔アップグレード画像と通常中心塔画像は、四角ベース画像をゲーム用に加工して使用している。外周黒背景だけを透過し、内部黒ディテールは残す。
-- 中心塔は `GridObjectVisual` 規格に合わせ、Rootを占有3x3セルの下端中央へ配置する。通常表示、アップグレード表示、Collider、Grid登録、青エリア基準を同じ中心セルから計算する。
-- `GridObjectVisual` は中心セルと占有セルからRoot下端中央を算出する共通APIを持つ。新規建造物やアップグレード表示もこの規格を使う。
-- 建造物の完成後Colliderは占有セル範囲の非Trigger BoxCollider。バリスタ、柵、大工小屋、作業小屋、監視塔はプレイヤーとも衝突する。
-- PlayerプレハブのColliderはランタイムで再設定しない。Collider調整はPrefab側を正とする。
-- シルエット表示は、YSortを持つ遮蔽物の場合「遮蔽物の足元がプレイヤーより手前」の時だけ出す。中心塔も他建造物と同じ判定に揃えた。
-- `area-survivors-closeout` skill を作成済み。作業終了/締め作業時はObsidian更新と両repoのcommit/pushをまとめて実施する。
-
-## 2026-06-11 引継ぎ: 軽量化と検証効率化
-
-- `90_GameplayTest.unity` は `05_Game.unity` のコピーではなく、Bootstrap Sceneとして維持する。
-- GameplayTest実行時はBootstrapが `05_Game` をAdditiveロードし、`GameplayTestRunner` を実行時に注入する。
-- Scenario選択は `EditorPrefs` の `AreaSurvivors.GameplayTestScenarioPath` に保持し、Scenario切り替えでScene差分を出さない。
-- `05_Game.unity` の `Ground Tilemap` 保存済みタイルは削除済み。地面は `TileGrid.Build()` が実行時に再生成する。
-- 追加Editorメニュー: `Area Survivors/Map/Clear Saved Ground Tiles In 05_Game`、`Area Survivors/Map/Rebuild Ground Preview In Active Scene`。
-- 検証済み: UniCLI Compile `0 errors / 0 warnings`、`Gameplay_Prefab_Smoke` PASS、`Gameplay_Navigation_Default` PASS、`Gameplay_Map_Perimeter` PASS。
-- 次回以降は、大きな作業前に軽量化済みSceneをベースとして扱い、巨大Scene差分本文の読み込みは避ける。
-
-## 2026-06-15 縦長マップ化の方針
-
-- 今後のゲーム性は、周囲から迫る敵を防ぐ形式から、縦長マップで上から迫る敵を防ぎつつ、下方向の資源を回収して拠点を強化する形式へ変更する。
-- マップは横3チャンク、縦11チャンクを初期案とする。中心チャンクを基準に上下5チャンクずつ並べる。
-- 敵出現は中心チャンクのすぐ上を1つ目として、上3つ目のチャンク全体から30秒ごとにランダムな出現位置を選ぶ。
-- 上方向の地面見た目は当面変更しない。自然物だけ、敵に占領された枯れた大地のイメージとして1セル木と2セル石を点在させる。
-- 下方向と左右方向の自然物は、従来通り10セル先、20セル先などの距離帯配置を維持する。
-
-## 2026-06-15 縦長マップの自然物配置ルール更新
-
-- 横1チャンク、縦11チャンクで一旦進める。
-- 自然物配置は従来の全方位距離帯ランダムから、チャンク単位の配置へ変更する。
-- 中心チャンクは塔から10〜20セル範囲に1セル木x3、1セル岩x3を配置する。
-- 下方向はチャンクが進むほど大型資源を増やす。
-- 上方向の敵側チャンクは、1セル木、1セル岩、2セル森、2セル岩を各3個のみ配置する。
-
-## 2026-06-17 建造物Prefab化・画像参照統合
-
-- 城壁/城門/バリスタ/監視塔/中心塔を、ゲーム内でTransformを加工する方式からPrefab上の表示を正とする方式へ寄せた。
-- 建造物Visualは、ランタイムでは原則positionのみを配置し、Scale/Rotation/表示比率はPrefabと処理済みSpriteで決める。
-- 建造中/アップグレード中の表示は、Yスケールで潰すのではなく、下から表示されるトリミング方式へ移行した。
-- 城壁と城門は3x1セル建造物へ変更した。横方向のみ配置し、縦柵とRキー回転は廃止した。
-- 旧DefensiveFence系、旧Fence画像、旧3D/ポリゴン仮素材、未使用Material/Meshを削除対象として整理した。
-- `Resources/Generated` と `Sprites/Generated` の二重配置を廃止し、ゲーム用生成Spriteは `Assets/AreaSurvivors/Sprites/Generated` に統一する方針にした。
-- 実行時ロードは `GeneratedSpriteLoader` + `GeneratedSpriteCatalog.asset` を経由する。Editor中は `AssetDatabase` で `Sprites/Generated` を優先し、ビルド時はカタログから読む。
-- 直接 `Resources.Load("Generated/... ")` を使う実装は避ける。通常ResourcesはConfigなど本来Resourcesであるものだけに限定する。
-- 検証: `Resources/Generated` の文字列参照とフォルダ実体が残っていないことを `rg` とファイル存在確認で確認。Unityバッチ検証は未実施。
-
-## 2026-06-17 締め検証
-
-- `git diff --check` PASS。
-- `unicli exec Compile` PASS。Unity Compile `0 errors / 0 warnings`。
-- `Resources/Generated` フォルダ実体なし、`Resources/Generated` 文字列参照なしを確認。
-- 変更した `area-survivors-asset-import` skill は `quick_validate.py` PASS。
-
-## 2026-06-18 現在状態
-
-- HUD、建造メニュー、スキルツリーなどユーザーがEditorで調整したいUIは、Scene上の配置・画像参照を正とする方針に更新済み。
-- スキルツリーは `04_Upgrades.unity` 上でSceneオブジェクトとして管理し、Runtimeでは `UpgradeScreen` が既存の `SkillNodeView` / `SkillLinkSegment` をバインドして状態更新する。
-- スキルツリーのジャンルは「プレイヤー」「建造物」「中心塔」。背景パネル、ジャンルラベル、ノード、リンク線はScene上に存在する。
-- `SkillTreeLayoutValidator` で、重複ID、ノード重なり、リンク角度、前提不整合を検証できる。
-- 武器強化は武器Lv制へ移行済み。武器Lvは初期1、最大10。武器ごとにLv別最終値を `GameConfig` のInspectorで設定する。
-- 旧武器永続強化や伐採/採掘個別強化など、現在のツリーに置かないUpgradeTypeは削除済み。
-- 攻撃判定は見た目に合わせやすいCollider中心へ移行中。Knight斬撃など隠れたOverlap判定は残さない方針。
-- 建造物やアップグレード後表示はPrefab上のVisual参照を正とし、RuntimeのSprite差し替えを避ける。
-- 最終検証: `unicli exec Compile` 0 errors / 0 warnings、Console Error 0件。
-
-## 2026-06-20 周囲襲来型への再設計・建造モード分離
-
-- 縦長マップ案を撤回し、周囲外周から敵が中心塔へ向かう形式へ戻した。
-- マップは3x3チャンク構成。自然物は中心チャンク以外の外側8チャンクに配置し、1セル/2x2/4x4の木・石へ整理した。敵と自然物の衝突、障害物回避、スタック時の障害物無効化は削除した。
-- ゲームはステージ制の連続進行ではなく、選択したステージを制限時間付きでプレイする方式へ変更した。初期制限時間は60秒、制限時間0はクリアではなく終了扱い。ボス撃破のみステージクリア。
-- ステージ1ボス撃破でステージ2がアンロックされる。ロビーのステージ欄はキャラ選択と同様に選択可能になり、ロビーから建造モードへ入る導線も追加済み。
-- 敵出現は外周から中心塔へ向かう。10秒ごとに出現位置を変え、30秒エリートイノシシ、60秒オーク化、90秒エリートオーク、120秒オークキングの時刻ルールへ変更した。
-- 中心塔系スキルに制限時間+10秒の `RoundTimeLimit` を追加し、最大6回で120秒。クラスチェンジはこのスキル取得後に解放される。
-- 建造はゲーム中操作から分離し、建造モードで永続資源を消費して即時完成する方式へ変更した。建造可能範囲は当面中心チャンクのみ。
-- 建造物はステージ別に保存され、ラウンドをまたいで引き継がれる。破壊された建造物は透明度低下+グレー化+Collider無効の破壊状態になり、次ラウンド開始時に復活する。
-- 大工小屋は自動建造ではなく、青いエリアで接続している建造物HPを一定間隔で回復する建造物へリワークした。
-- ラウンド終了時は勝敗に関係なく、固定報酬とゲーム中採取分の木・石を永続資源へ持ち帰る。ゲーム終了画面には新規獲得木・石を表示する。
-- スキルツリーの不要スキルを置換した。自動建造系は自動回復速度/回復量、初期木材/石材はラウンド終了時木材/石材獲得量へ変更した。
-- 建造中ゴースト、Build Fill、建造ハンマー、接触建造、アップグレード進行、中心塔アップグレード予約などの旧機能と参照を削除した。`TowerUpgradeConstruction` と `CancelUpgradeIcon` も削除済み。
-- `BuildingPrefabVisualSet` は完成表示、アップグレード完成表示、スパークル参照を中心に整理した。Prefab/Scene/Editorセットアップから旧建造中Visualを再生成しないよう更新済み。
-- 検証: `unicli exec Compile` 0 errors / 0 warnings、Console Error 0件、旧建造中キーワード残存検索ヒットなし。`Gameplay_Map_Perimeter` は3x3周囲襲来仕様へ調整後PASS済み。
-
-## 次の作業候補 2026-06-20
-
-- 建造モード/ゲームモードの実機操作をGame Viewで確認し、ロビー導線、ステージ選択、永続資源表示、建造保存/復元を通しで確認する。
-- ボス撃破、制限時間0、中心塔破壊の終了分岐と、終了画面の木・石獲得表示をGameplayTest化する。
-- ステージ別建造データの保存形式を今後のステージ追加や建造物追加に耐えやすい形へ整理する。
-- 破壊状態の仮表現は透明度低下+グレー化なので、ユーザー作成の破壊Spriteが来たらPrefab参照へ置き換える。
+- トークン削減をさらに行う場合は、通常は `token-health.ps1` で日常用ベースラインと比較し、巨大出力の退行確認が必要な時だけ `token-benchmark-heavy.ps1` を明示実行する。
+- UIやScene作業では、まず対象オブジェクトと座標を絞り、Validator/Reporterで確認してから最終スクリーンショットを見る。
+- 外部メモリ更新や締め作業では、AreaSurvivors本体と `codex-external-memory` の両方を対象にする。
