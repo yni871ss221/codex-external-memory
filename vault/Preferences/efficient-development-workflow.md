@@ -1,4 +1,4 @@
-﻿---
+---
 date: 2026-06-10
 tags: [preferences, area-survivors, workflow, credit-saving, testing]
 project: area-survivors
@@ -87,3 +87,9 @@ related: [[Preferences/testing-workflow]], [[Knowledge/area-survivors-unity-work
 - 日常用の消費比較は `token-health.ps1` と `TokenReports/token-daily-baseline.json` を使う。
 - Heavyベンチ `token-benchmark-heavy.ps1` は巨大出力退行を明示確認したい場合だけ実行する。
 - TokenReportsは `token-report-summary.ps1 -Kind ... -Since ...` で必要範囲を絞り、古いJSONLは `archive-token-reports.ps1` で削除せずアーカイブする。
+
+## 2026-06-21 低トークン入口固定化
+
+- 作業開始時にObsidianを常読しない。恒久ルールは AGENTS.md、詳細は必要時だけ Docs/AgentRules/*.md を読む。
+- Asset整理や未参照候補調査は全文読込ではなく Reporter と filter ツールを先に使う。
+- プロジェクト容量の大きさそのものより、巨大Scene、Prefab、長いコード、広域検索の直接読込を避ける方がクレジット節約に効く。

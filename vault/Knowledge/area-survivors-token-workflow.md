@@ -83,3 +83,13 @@ related:
 
 - CLIからScene/Prefab検索する場合は `Tools/TokenUsage/safe-unity-search.ps1 -Query <検索語>` を使う。
 - 検索語をEditorPrefsへ設定し、`Area Survivors/Reports/Scene Prefab Search` を実行して、保存ファイルのパスだけ返す。
+
+## 2026-06-21 追加運用
+
+- 通常作業開始時はObsidianを読まず、AGENTS.md を唯一の入口にする。
+- ルール詳細は Docs/AgentRules/*.md に分離し、必要なカテゴリだけ読む。
+- Asset整理は次の順で行う:
+  - un-unity-report.ps1 -Report asset-references
+  - ilter-asset-reference-report.ps1 -Top <件数>
+  - 必要時だけ -ExportPath で判定メモを出す
+- Sprites/External の整理は容量削減より検索ノイズ削減に効く。総容量だけではなく、巨大Sceneや長いコードを直接読まない運用を優先する。
