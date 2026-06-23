@@ -93,3 +93,9 @@ related: [[Preferences/testing-workflow]], [[Knowledge/area-survivors-unity-work
 - 作業開始時にObsidianを常読しない。恒久ルールは AGENTS.md、詳細は必要時だけ Docs/AgentRules/*.md を読む。
 - Asset整理や未参照候補調査は全文読込ではなく Reporter と filter ツールを先に使う。
 - プロジェクト容量の大きさそのものより、巨大Scene、Prefab、長いコード、広域検索の直接読込を避ける方がクレジット節約に効く。
+## 2026-06-23 レポート外トークン補足
+
+- 長時間作業は開始時に `start-token-check.ps1 -UiPercent <開始%> [-BudgetTokens <推定枠>] -Note <作業名>` を実行する。
+- 終了時は `end-token-check.ps1 -CurrentPercent <現在%>` または `session-coverage.ps1 -CurrentPercent <現在%> -Save` を実行する。
+- スクリーンショット、会話要約、直接tool出力、重い推論判断などは `record-untracked-usage.ps1` で手動記録し、TokenReports外の未知消費を減らす。
+- 日別分析は `token-report-summary.ps1 -Path TokenReports/YYYY-MM-DD.jsonl` を使い、複数日集計やbenchmark混入と混同しない。

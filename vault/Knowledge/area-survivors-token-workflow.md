@@ -93,3 +93,14 @@ related:
   - ilter-asset-reference-report.ps1 -Top <件数>
   - 必要時だけ -ExportPath で判定メモを出す
 - Sprites/External の整理は容量削減より検索ノイズ削減に効く。総容量だけではなく、巨大Sceneや長いコードを直接読まない運用を優先する。
+
+## 2026-06-23 レポート外消費の補足
+
+- `start-token-check.ps1` は `-UiPercent` / `-BudgetTokens` / `-Note` を受け取り、開始マーカーへUI使用率を保存する。
+- `session-coverage.ps1` は最新の `token_start_marker` から開始UI使用率とbudgetを自動取得し、`-CurrentPercent` だけで差分推定できる。
+- `record-untracked-usage.ps1` は、会話、長い回答、画像添付、直接ツール出力、推論負荷などTokenReportsに自動記録されない消費を `manual_untracked_usage` として保存する。
+- 画像は `-ImagePath` を指定すると画像サイズから概算する。厳密値ではなく、UI使用率差分の未知バケットを小さくするための補助値として扱う。
+- `token-report-summary.ps1 -Path TokenReports/YYYY-MM-DD.jsonl` は指定した日別JSONLだけを集計する。`-Days` 集計と混同しない。
+- サマリーにはkind別内訳が出るため、`safe_command`、`daily_health`、`manual_untracked_usage`、`token_coverage_snapshot` を分けて読む。
+- 完全に取得できないもの: モデル内部推論トークン、Codex固定コンテキストの正確な内訳、画像の実トークン化、UI外で返ったtool resultの厳密値。
+- 運用上は「UI使用率差分 - command記録 - manual記録 = 残り未知消費」として見る。

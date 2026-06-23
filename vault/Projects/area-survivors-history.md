@@ -34,3 +34,15 @@ related:
 - AssetReferenceReporter を実行し、TokenReports/UnityReports/asset-references-20260621-164153.md を生成できることを確認した。
 - ilter-asset-reference-report.ps1 -ExportPath ... で判定メモ sset-review-notes.md を出せるようにした。
 - プロジェクトサイズを確認し、総容量よりも大きい .unity / .prefab / .asset と長いコード読込がトークン消費に効くことを確認した。
+
+## 2026-06-23
+
+- AreaSurvivorsリブート作業をPhase 0〜7まで完了扱いにした。不要機能停止から本削除、固定スロット建造化、HUD整理、塗り/セル占有整理、武器仕様整理、敵出現/Stage進行、Prefab画像Scale正規化まで実装・検証済み。
+- HUD/Scene疎結合方針を再確認し、塗り内訳ゲージとトークン獲得数パネルはScene配置を正とする形へ整理した。
+- 武器ラインナップはスラッシュ / 弓 / 火の玉の3種で確定。`slashWeaponLevels` / `arrowWeaponLevels` / `fireballWeaponLevels` と `WeaponType` へデータ構造を整理した。
+- Stage 1/2 の敵出現とボス討伐Stage進行を固定仕様として整理し、`Gameplay_Stage_Progression` で検証した。
+- 建造物Prefab画像サイズは、建造物本体/アップグレード本体の child Transform Scale `1,1,1` を正とし、`Completion Sparkle` だけ演出例外にした。
+- トークン消費調査を行い、TokenReports上の巨大値はbenchmark/command_estimateが主因で、実際のUI消費は固定コンテキスト・会話・画像・直接ツール出力などレポート外要素が大きいと整理した。
+- レポート外消費を補足するため、`record-untracked-usage.ps1`、`start-token-check.ps1 -UiPercent`、`session-coverage.ps1` の開始値自動取得、`token-report-summary.ps1 -Path`、kind別summaryを追加した。
+- 直近検証: Compile成功、Console Error表示なし、`Gameplay_Reboot_Weapons` PASS、`Gameplay_Stage_Progression` PASS、`git diff --check` 問題なし。
+- AreaSurvivors本体の直近コミット: `2345003` Track unreported token usage、`a63ee73` Align weapon level data with weapon types、`ff72df4` Add stage progression gameplay test、`da5f05f` Verify reboot gameplay integration。
