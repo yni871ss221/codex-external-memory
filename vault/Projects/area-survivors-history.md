@@ -46,3 +46,19 @@ related:
 - レポート外消費を補足するため、`record-untracked-usage.ps1`、`start-token-check.ps1 -UiPercent`、`session-coverage.ps1` の開始値自動取得、`token-report-summary.ps1 -Path`、kind別summaryを追加した。
 - 直近検証: Compile成功、Console Error表示なし、`Gameplay_Reboot_Weapons` PASS、`Gameplay_Stage_Progression` PASS、`git diff --check` 問題なし。
 - AreaSurvivors本体の直近コミット: `2345003` Track unreported token usage、`a63ee73` Align weapon level data with weapon types、`ff72df4` Add stage progression gameplay test、`da5f05f` Verify reboot gameplay integration。
+
+## 2026-06-25
+
+- `4ba7f50` Update HUD and weapon progression をAreaSurvivors本体へコミットし、`origin/feature/02_GameSystemUpdate` へpushした。
+- ロビーの建造画面導線と建造モード起動を削除し、ゲーム開始導線を現仕様へ寄せた。
+- ゲームHUDをScene配置前提で再整理し、エリア塗り状況上部パネル、トークン/塗りパネル背景、近接時透明化、プレイヤー/武器ステータス表を調整した。
+- 武器ステータスはスラッシュ/弓/火の玉のパネルをScene上に置き、未取得武器は中身を空表示、取得後にアイコン/名称/4項目ステータスを表示する仕様へ変更した。
+- HUD追加をRuntime生成してしまった再発ミスを受け、`Docs/AgentRules/ui-and-hud.md` と外部メモリへ「HUD新規生成禁止、Scene配置と既存参照更新のみ」を再記録した。
+- 火の玉は進行方向へ飛び、敵衝突または射程到達で爆発する仕様へ変更。道中/爆発範囲には塗りが発生し、中心塔/バリスタ攻撃は塗りなしダメージのみとした。
+- 中心塔以外の建造物セルにも敵用衝突判定を持たせ、プレイヤーとは衝突しない形へ整理した。
+- 壁を1x1セル画像へ差し替え、通常/石壁アップグレード画像の背景切り抜きと `Sprites/Generated` 取り込みを行った。
+- 固定配置建造物を仕様画像に合わせ、壁/バリスタ/中心塔の配置を整理した。
+- スキルツリーは仕様画像を「配置・No対応・スキル一覧」として扱い、ジャンルパネルを維持したままノード/接続/スキル内容を差し替える運用へ変更した。以後のメンテ用に `area-survivors-skill-tree-maintenance` skill を作成済み。
+- エリート出現率UPの旧ロジックを廃止し、0:30/1:30時点のエリート出現数UPとして処理する仕様へ変更した。
+- レベルアップ画面は、武器Lv上昇から「新武器獲得」または「取得済み武器の個別ステータス強化」へ変更。3枠が埋まるまでは未取得武器が候補に出現し、埋まった後は取得済み武器の4項目強化のみ出現する。
+- 直近検証: `rtk unicli exec Compile` 成功、`0 errors / 0 warnings`。`rtk unicli exec Console.GetLog` ログ0件。`git diff --check -- Assets\AreaSurvivors\Scripts Assets\AreaSurvivors\Editor Docs\AgentRules` 問題なし。

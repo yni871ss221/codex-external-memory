@@ -56,3 +56,10 @@ unicli exec PlayMode.Exit
 - 一時Runnerは `Assets/AreaSurvivors/Editor/Temporary*.cs` として作成し、`Menu.Execute --menuItemPath ...` で実行する。実行後は `.cs` と `.meta` を削除し、`AssetDatabase.Import --forceUpdate true` とCompileでUnity側の参照を更新する。
 - 最後に `rg` で旧子名、旧Serialized field名、旧Sprite名を `*.cs` / `*.prefab` / `*.unity` / `*.asset` へ横断検索する。
 - Unity Prefab YAMLは空フィールド行で `git diff --check` のtrailing whitespaceが大量に出る場合があるため、基本はコード対象に絞って `git diff --check` し、Prefabは残存キーワード検索とUnity Compile/Consoleで確認する。
+
+## 2026-06-25 HUD Scene配置の再徹底
+
+- HUDの新規項目はScene上へ配置し、Runtimeで `CreatePanel`、`CreateText`、`Ensure*`、`new GameObject` を使って新規HUDを生成しない。
+- `GameManager` / `GameHudController` はScene配置済みHUDの参照取得、値更新、ボタン接続、表示/非表示切替だけを担当する。
+- 未取得武器など状態で空にしたいHUDは、パネル枠をSceneに残し、子要素の表示切替で空表示にする。Scene上の位置・サイズ・SpriteをRuntimeで補正しない。
+- HUDアイコンの見た目がずれる場合はRectTransformだけで補正せず、元Spriteの透明余白と縦横比を確認し、必要ならHUD専用Spriteを `Assets/AreaSurvivors/Sprites/Generated` に作る。

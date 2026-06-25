@@ -118,3 +118,8 @@ related: [[Preferences/language]]
 **NG Action**: ユーザーがScene上でラベルやHUD項目を削除・調整した後に、`UpgradeScreen` などのRuntimeフォールバック生成で旧ラベルや線、UI項目を復活させた。
 **Correct Action**: AreaSurvivorsのHUD、建造メニュー、スキルツリーなどEditor調整対象UIはSceneを正とする。Runtimeは既存Sceneオブジェクトのバインド、状態更新、ボタン接続だけを行う。Scene要素がない場合は勝手に生成せず、必要ならエラーや警告で不足を知らせる。
 **Trigger**: HUD、ロビー、建造メニュー、スキルツリー、ステータス表示、ジャンルラベル、リンク線など、ユーザーがScene上で配置・削除・調整するUIを扱うとき。
+
+2026-06-25: HUD武器ステータスをRuntime生成で追加した
+**NG Action**: ユーザーが何度も「HUDはScene上に配置」と指示していたのに、武器ステータスHUDを `GameManager` / `GameHudController` の実行時生成で追加し、Editor上で調整できない構成にした。
+**Correct Action**: AreaSurvivorsのHUD追加・修正では、必ず `05_Game.unity` のHUD配下にSceneオブジェクトを配置する。Runtime側は既存オブジェクトを検索/参照し、値更新、ボタン接続、表示/非表示切替だけを行う。Scene要素が足りない場合も勝手に生成せず、警告で不足を知らせる。
+**Trigger**: AreaSurvivorsでプレイヤーステータス、武器ステータス、資源、ステージ、撃破数、塗り状況、トークンなどHUD項目を追加・変更するとき。
