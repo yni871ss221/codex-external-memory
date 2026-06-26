@@ -123,3 +123,18 @@ related: [[Preferences/language]]
 **NG Action**: ユーザーが何度も「HUDはScene上に配置」と指示していたのに、武器ステータスHUDを `GameManager` / `GameHudController` の実行時生成で追加し、Editor上で調整できない構成にした。
 **Correct Action**: AreaSurvivorsのHUD追加・修正では、必ず `05_Game.unity` のHUD配下にSceneオブジェクトを配置する。Runtime側は既存オブジェクトを検索/参照し、値更新、ボタン接続、表示/非表示切替だけを行う。Scene要素が足りない場合も勝手に生成せず、警告で不足を知らせる。
 **Trigger**: AreaSurvivorsでプレイヤーステータス、武器ステータス、資源、ステージ、撃破数、塗り状況、トークンなどHUD項目を追加・変更するとき。
+
+2026-06-26: 敵歩行アニメーションを元画像加工で作ろうとした
+**NG Action**: ユーザーが「右/正面/上の3面歩行フレーム画像を生成してほしい」と依頼したのに、添付された立ち絵を変形・加工してシート化し、向きや歩行フレームが破綻した画像を作った。
+**Correct Action**: AreaSurvivorsの敵歩行アニメーションでは、正面/右/上それぞれ3フレームの「その向きを向いたキャラクター画像」を生成または用意する。左は右向き反転で作る。難しい場合は早めにユーザーへ素材作成依頼を提案する。
+**Trigger**: 敵・プレイヤーなどの歩行アニメーション用Spriteを新規作成・差し替えするとき。
+
+2026-06-26: 見た目サイズをScale/Rotationで補正しようとした
+**NG Action**: 建造物破壊画像、敵、プレイヤー、弓矢などの見た目サイズや向きをPrefab/実行時のScaleやRotation X/Yで補正しようとした。
+**Correct Action**: AreaSurvivorsのSprite見た目サイズは、透過、トリミング、キャンバス余白、PNG解像度、PPU/import設定で合わせる。Prefab/子VisualのScaleは原則 `1`、Rotation X/Yは `0`。Projectileの進行方向だけRotation Zを許容する。
+**Trigger**: Sprite、Prefab Visual、敵/プレイヤー表示、Projectile表示、建造物画像を追加・差し替え・サイズ調整するとき。
+
+2026-06-26: Runtimeでアイコン/Sprite差し替えをしようとした
+**NG Action**: スキルツリーアイコンや建造物表示など、Scene/Prefabで参照を持つべき静的Visualをゲーム内コードで差し替える方向へ実装した。
+**Correct Action**: AreaSurvivorsの静的Visual、HUD、スキルツリー、建造メニューのアイコンやSource ImageはScene/Prefab上の参照を正とする。Runtimeは既存参照の状態更新・表示切替に留め、新規配置・生成・Sprite差し替えをしない。
+**Trigger**: HUD、スキルツリー、建造メニュー、建造物表示、静的アイコン、Source Imageを追加・変更するとき。

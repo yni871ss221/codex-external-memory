@@ -47,3 +47,10 @@ related: [[Projects/area-survivors-current]], [[area-survivors-paper-billboard-f
 - 建造物Prefabでは、通常表示、ゴースト、建造中表示、完成表示、アップグレード後表示を同じ下端アンカー/同じ幅基準でそろえる。
 - ランタイム側は建造物VisualのScale、Rotation、Y伸縮を原則変更しない。見た目が合わない場合は、処理済みPNGまたはPrefab内Transformを修正する。
 - アップグレード画像を追加する場合も、元画像とアップグレード画像の両方を同じ占有セル横幅で加工し、Prefab参照まで更新する。
+
+## 2026-06-26 Scale/Rotation禁止の強化
+
+- 建造物、敵、プレイヤー、ProjectileはPrefab/子VisualのScaleを原則 `1`、Rotation X/Yを `0` にする。Projectileの飛翔角度としてRotation Zを変えるのは許容する。
+- 見た目サイズはScaleではなく、透過・トリミング・キャンバス余白・PNG解像度・PPU/import設定で合わせる。
+- 破壊画像、アップグレード画像、弓矢画像などは、通常画像と同じ基準で処理済みSpriteを作り、Prefab参照を差し替える。
+- 黒背景透過では、境界接続した背景だけを抜き、オブジェクト内部の黒を透過しない。

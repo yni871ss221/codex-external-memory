@@ -104,3 +104,10 @@ related:
 - サマリーにはkind別内訳が出るため、`safe_command`、`daily_health`、`manual_untracked_usage`、`token_coverage_snapshot` を分けて読む。
 - 完全に取得できないもの: モデル内部推論トークン、Codex固定コンテキストの正確な内訳、画像の実トークン化、UI外で返ったtool resultの厳密値。
 - 運用上は「UI使用率差分 - command記録 - manual記録 = 残り未知消費」として見る。
+
+## 2026-06-26 start-task-token-check運用
+
+- 作業開始時は `start-task-token-check.ps1 -Task "<依頼内容>" -UiPercent <開始%> [-BudgetTokens <推定枠>]` を優先する。
+- このWrapperは `rule-router.ps1` で読むべき詳細ルールと中核ファイルを表示し、そのまま `start-token-check.ps1` の開始マーカーも記録する。
+- 既に読むルールが明確な小修正だけ、従来の `start-token-check.ps1` を直接使う。
+- `run-unity-report.ps1` は `Eval` より `Menu.Execute` を優先する。PowerShellスクリプト内からUniCliを呼ぶ場合、環境によってUnity名前付きパイプにアクセスするため権限付き実行が必要になる。

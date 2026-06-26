@@ -62,3 +62,18 @@ related:
 - エリート出現率UPの旧ロジックを廃止し、0:30/1:30時点のエリート出現数UPとして処理する仕様へ変更した。
 - レベルアップ画面は、武器Lv上昇から「新武器獲得」または「取得済み武器の個別ステータス強化」へ変更。3枠が埋まるまでは未取得武器が候補に出現し、埋まった後は取得済み武器の4項目強化のみ出現する。
 - 直近検証: `rtk unicli exec Compile` 成功、`0 errors / 0 warnings`。`rtk unicli exec Console.GetLog` ログ0件。`git diff --check -- Assets\AreaSurvivors\Scripts Assets\AreaSurvivors\Editor Docs\AgentRules` 問題なし。
+
+## 2026-06-26
+
+- 建造物破壊画像を壁/バリスタ/監視塔の通常・アップグレードに割り当て、Prefab/Scene参照ベースで破壊時に表示されるよう整理した。Scale調整は禁止し、画像加工でセルサイズに合わせる方針を強化した。
+- 建造物スキルNo1/No5で壁/バリスタを出現、No12/No13でNo1/No5配置分のみアップグレードする仕様へ変更した。中心塔No6アップグレードも実装した。
+- スキルツリーアイコンをScene上の参照として差し替え、RuntimeでのSprite差し替えを行わないルールを再確認した。
+- 不要になった門を削除し、Prefab/Sprite/TilePalette/実装参照の残骸整理を実施した。
+- Stage 3（スケルトン/スケルトンナイト/リッチ）とStage 4（リザード/リザードマン/ドラゴン）を追加した。ロビーにはStage 3テスト導線を追加済み。
+- Spineは試行後、素材分割とセットアップ負荷が高いため採用を一旦中止。導入済みランタイムは残し、プレイヤーへの埋め込み実装は削除した。
+- 敵/プレイヤーのScaleとRotation補正を見直し、PrefabのScale `1`、Rotation `0` を基本に戻した。横向き歩行フレームの膨らみはフレーム幅/Importer側を揃えて修正した。
+- 弓矢は射程内ターゲットのみを対象にし、複数本は近い順に別ターゲットへ飛ぶ仕様へ変更した。初期射程は約10セル、プレイヤー矢はバリスタ矢と別Prefab/画像に分離してサイズ調整した。
+- トークン負荷対策として `rule-router.ps1` を強化し、`start-task-token-check.ps1` を追加。作業開始時にルール選択と開始マーカーを同時に扱えるようにした。
+- `SkillTreeLayoutReporter` を追加し、`run-unity-report.ps1 -Report skill-tree-layout` でスキルツリーの配置/参照/接続を検出できるようにした。最新レポートはIssue 0。
+- `GameManager` から武器HUDバインド/更新を `WeaponHudPanelBinding` へ分割した。
+- 直近検証: `unicli exec Compile` 成功、`0 errors / 0 warnings`。`skill-tree-layout` レポート実行成功、Issue 0。PowerShell構文チェックOK。

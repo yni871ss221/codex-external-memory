@@ -32,3 +32,11 @@ powershell -ExecutionPolicy Bypass -File Tools/TokenUsage/Run-WithTokenReport.ps
 - Codex内部の実課金tokenや思考tokenの完全内訳ではなく、コマンド/ファイル出力の推定tokenを記録する仕組み。
 - `-Command` はコマンド自体を実行するため、読み取り系・安全なコマンドで使う。
 - 大きな出力が予想される場合は、このツール、RTK、専用Reporter/Validatorを優先する。
+## 2026-06-26 追加ツール
+
+- `Tools/TokenUsage/start-task-token-check.ps1`
+  - `-Task` を受け取り、`rule-router.ps1` と `start-token-check.ps1` を連続実行する。
+  - 作業開始時に「読むルールの絞り込み」と「開始UI使用率/予算記録」を同時に行う入口。
+- `Tools/TokenUsage/run-unity-report.ps1 -Report skill-tree-layout`
+  - `Area Survivors/Reports/Skill Tree Layout` を実行し、スキルツリーのノード参照、アイコン、重なり、リンクをReporterで確認する。
+  - 最新確認では `TokenReports/UnityReports/skill-tree-layout-20260626-122758.md` が `Issue Count: 0`。

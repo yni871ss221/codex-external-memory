@@ -99,3 +99,9 @@ related: [[Preferences/testing-workflow]], [[Knowledge/area-survivors-unity-work
 - 終了時は `end-token-check.ps1 -CurrentPercent <現在%>` または `session-coverage.ps1 -CurrentPercent <現在%> -Save` を実行する。
 - スクリーンショット、会話要約、直接tool出力、重い推論判断などは `record-untracked-usage.ps1` で手動記録し、TokenReports外の未知消費を減らす。
 - 日別分析は `token-report-summary.ps1 -Path TokenReports/YYYY-MM-DD.jsonl` を使い、複数日集計やbenchmark混入と混同しない。
+
+## 2026-06-26 低トークン開始入口
+
+- AreaSurvivorsの通常作業開始は `Tools/TokenUsage/start-task-token-check.ps1 -Task "<依頼内容>" -UiPercent <開始%>` を優先する。
+- `rule-router.ps1` の判定を先に出してから開始マーカーを記録するため、読むルールを絞りつつTokenReports外消費の開始点も残せる。
+- スキルツリー/HUD/Scene確認は全文diffではなくReporterを優先する。スキルツリーは `run-unity-report.ps1 -Report skill-tree-layout` を使う。
