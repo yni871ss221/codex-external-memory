@@ -1,13 +1,14 @@
 ---
 title: AreaSurvivors Current
 type: project-current
-updated: 2026-06-26
+updated: 2026-06-30
 tags:
   - project/area-survivors
   - codex/current
 related:
-  - "[[area-survivors-token-workflow]]"
   - "[[area-survivors-history]]"
+  - "[[area-survivors-unity-workflow]]"
+  - "[[area-survivors-attack-visuals]]"
 ---
 
 # AreaSurvivors Current
@@ -19,70 +20,51 @@ related:
 - Main Scene: `Assets/AreaSurvivors/Scenes/05_Game.unity`
 - Gameplay Test Scene: `Assets/AreaSurvivors/Scenes/90_GameplayTest.unity`
 - Current Branch: `feature/02_GameSystemUpdate`
-- Worktree at closeout: AreaSurvivors本体は多数の変更あり。締め作業でまとめてcommit/push予定。
-- Reboot status: Phase 0〜7 完了扱い。現在は追加ステージ、建造物スキル、HUD/素材整理フェーズ。
+- Worktree at closeout: 2026-06-30作業分をまとめてcommit/push予定。`tmp/` と `__pycache__/` は `.gitignore` へ追加し、コミット対象から除外する。
+- Reboot status: Phase 0〜7完了後の追加UI/音声/コライダー/建造物/武器拡張フェーズ。
 
-## 2026-06-26 完了内容
+## 2026-06-30 完了内容
 
-- 破壊済み建造物画像を追加し、壁/バリスタ/監視塔の通常・アップグレード破壊表示をPrefab/Scene参照ベースで差し替えるよう整理した。
-- 破壊画像や建造物/敵/弾画像はScaleで合わせず、PNG加工とImport設定でScale `1`、Rotation `0` を維持するルールを強化した。
-- 建造物スキルNo1/No5取得時に、初期固定配置の壁/バリスタが出現する仕様へ変更した。
-- 建造物スキルNo12/No13取得時に、No1/No5で追加した固定配置分だけ壁/バリスタがアップグレードされるようにした。将来外周配置分とは分離する方針。
-- バリスタ/壁など建造物の表示優先度を、セル位置的に手前のオブジェクトが手前へ出るよう調整した。
-- スキルツリーの各ジャンルアイコンをScene上の `Source Image` 参照として差し替え、RuntimeコードによるSprite差し替えを禁止ルール化した。
-- 門を不要建造物として削除した。Prefab、Sprite、TilePalette、実装参照、スキル/保存データ互換周りの残骸整理を実施した。
-- Stage 3を追加。スケルトン、スケルトンナイト、リッチ（ボス）を追加し、ロビーにStage 3テストボタンを用意した。
-- Spine導入を試行したが、プレイヤー歩行に適用するには部位分割素材やセットアップ負荷が高いため中止。導入済みランタイムは残し、プレイヤー実装からは削除した。
-- Stage 4を追加。リザード、リザードマン、ドラゴン（ボス）を追加し、リザードの横向きサイズを2セル幅相当に調整した。
-- 中心塔スキルNo6取得時に中心塔がアップグレードされるよう実装した。
-- エリート出現数UPスキルは最大Lv4に制限した。
-- ステージ2オーガなど、横向き歩行フレームで膨らむ/縮むように見える箇所を調査し、Sprite import/フレーム幅の揃え込みで修正した。
-- 弓矢は射程内の敵だけを対象にし、複数本は近い順に別敵へ飛ぶ仕様へ変更した。射程内の敵が足りない場合は本数を減らす。
-- プレイヤー初期弓射程を約10セル分へ縮小した。
-- プレイヤー矢はバリスタ矢と分離した `PlayerArrow` 画像/Prefabへ変更し、Scale `1`、Rotation X/Y `0` のまま見た目サイズを調整した。
-- トークン負荷対策として `start-task-token-check.ps1` を追加し、作業開始時にルールルーティングと開始マーカーを同時実行できるようにした。
-- `SkillTreeLayoutReporter` を追加し、スキルツリーのノード、アイコン、接続、重なりを `run-unity-report.ps1 -Report skill-tree-layout` で確認できるようにした。
-- `GameManager` 内の武器HUDバインド/更新処理を `WeaponHudPanelBinding` へ分割した。
+- BGM/効果音を導入し、タイトル/オプション、ロビー/強化、ゲーム通常、ボス、武器発射、ヒット、経験値、レベルアップ、ゲーム終了などへ割り当てた。音量初期値とBGM/SE倍率も調整した。
+- AudioManagerのEditor実行時 `DontDestroyOnLoad` エラーを修正し、ゲーム終了画面遷移時にゲーム中BGMが残らないようにした。
+- 一時停止メニューを追加し、Escで停止、オプション、諦める確認、再開を実装した。オプション画面はタイトル/ゲーム内で共有し、Scene配置へ寄せた。
+- タイトル画面、ゲーム終了画面、オプション、HUD関連をRuntime生成からScene配置へ移行し、タイトル/ゲームオーバー演出アニメーションを追加した。
+- プレイヤー/敵Colliderを足元BoxCollider基準へ調整し、壁下からのスタックはTileGridの移動判定ロジックを調査して修正した。調査ログは削除済み。
+- 敵アウトライン/シルエット/輪郭表示をPrefab参照ベースへ移行し、ランタイムでは色や状態変更中心にした。
+- 建造物HPバーを追加し、満タン時非表示、被ダメージ時だけ頭上に表示されるよう調整した。
+- スキルツリーで弓/ファイアボール/シールド/追加7武器をアンロック式へ変更し、武器3枠上限と取得順HUD表示を整理した。
+- 建造物スキルとして監視塔4隅出現、外周壁②追加/アップグレードを仕様画像に合わせて実装・配置調整した。
+- 武器図鑑Sceneを追加し、ロビー導線、ロック表示、武器タイプアイコン、特徴/初期ステータス/特殊効果表示を実装した。
+- 武器タイプ（近接/遠距離/魔法/防御）と画像生成アイコンを追加し、武器図鑑、レベルアップ画面、HUDに反映した。
+- 特殊効果を追加した。スラッシュ/弓/ファイアボール/シールド/追加武器はエリア占有率に応じて発動し、HUDの発動後パラメータは赤表示される。
+- シールド、旗、ブーメランソード、オーラソード、アローレイン、銃、フロスト、サンダーボールを追加した。各武器のPrefab/画像/効果音/ステータス/HUD/レベルアップ/武器図鑑/テスト起動を接続済み。
+- Gameplay Test Launcher Sceneを追加し、ロビーから遷移できるテスト画面にStage 2〜4開始と武器別Stage 1開始ボタンを配置した。
+- ブーメランソードはMultiSurvivors相当の投げ戻り挙動へ寄せ、実際に剣画像を回転させる仕様へ変更した。
+- アローレインは固定位置に出現し、10セル先へ発生、楕円エリア、円内への塗り、矢雨アニメーションを追加した。横並びセットに見えた原因はフレーム画像自体だったため、散布配置の8フレームへ再生成した。
+- フロストはプレイヤー足元に固定発生し、楕円エリアと霜が舞うアニメーションへ変更した。
+- 旗/アローレイン/フロストのエリア表示を斜め視点向けの楕円へ変更した。旗の初期範囲は半径3セルへ調整した。
+- ブーメランソードとオーラソードの攻撃軌道、アローレイン発生エリアが青色に塗られるよう `TileGrid.PaintEllipse` 等を追加した。
+- サンダーボールに攻撃範囲の楕円表示を追加した。
 
 ## 残す互換/注意
 
-- `CharacterType.Archer` / `CharacterType.Mage` は旧セーブ / 旧表示分岐互換としてのみ残す。武器データのキーには使わない。
-- 廃止 `UpgradeType` と `SavedBuildingKind` の一部は旧セーブ互換と retired 判定用に残す。
-- Spineランタイムは導入済みだが、現時点ではプレイヤーや敵の実装に使っていない。削除不要の指示済み。
-- 生成済みゲーム用Spriteは `Assets/AreaSurvivors/Sprites/Generated` に統一し、`Resources/Generated` は新規追加しない。
 - Static/Visual/UI/SkillTreeアイコンはScene/Prefab参照を正とする。Runtimeで新規配置・生成・Sprite差し替えをしない。
+- 動的攻撃/Projectile/AreaはPrefab参照から生成する。見た目調整はPrefab/画像/Importer側を正とし、ランタイムで固定Scale/Rotationへ戻さない。
+- 武器HUDは最大3枠。新武器候補は3枠が埋まったら出さず、取得済み武器アップグレード候補にする。
+- アローレインのような多フレーム攻撃演出は、コードで位置ブレを足す前に、フレーム画像そのものが横並び/セット化していないか確認する。
+- 生成済みゲーム用Spriteは `Assets/AreaSurvivors/Sprites/Generated` に統一し、`Assets/AreaSurvivors/Resources/Generated` は新規追加しない。
+- `tmp/` と `__pycache__/` はコミット対象外。
 
 ## 直近検証
 
 - `unicli exec Compile`: 成功、`0 errors / 0 warnings`。
-- `powershell -ExecutionPolicy Bypass -File Tools/TokenUsage/run-unity-report.ps1 -Report skill-tree-layout`: 成功（権限付き実行）。
-- 最新 `TokenReports/UnityReports/skill-tree-layout-20260626-122758.md`: `Issue Count: 0`。
-- `Tools/TokenUsage/*.ps1` のPowerShell構文チェック: OK。
-- Scene/Prefab差分は大きいため本文diffは読まず、`git status`、対象diff、Compile、Reporterで確認した。
-
-## 重要ルール
-
-- ユーザーへの説明、作業報告、Obsidian記録は日本語で行う。
-- 通常作業開始時のObsidian外部記憶読み込みは行わない。履歴確認・記録・締め作業を明示された時だけ使う。
-- Scene/Prefab/HUDはEditor調整を尊重し、Runtimeで既存配置やSpriteを固定値へ戻さない。
-- ゲーム実行中にGameObject/UI/静的Visualを新規配置・生成・差し替えしない。静的オブジェクトはSceneへ直接配置、動的オブジェクトはPrefab化して参照から生成する。
-- スキルツリー、HUD、建造メニューなどのアイコンや `Source Image` はScene/Prefab上の参照を正とし、RuntimeコードでSpriteを差し替えない。
-- 建造物、敵、プレイヤー、Projectileの見た目サイズはScaleではなく元画像加工で合わせる。Prefab/子VisualのScaleは原則 `1`、Rotation X/Yは `0`、必要なProjectile向きだけRotation Zを許容する。
-- 敵歩行アニメーションは、元画像を変形して作るのではなく、向き別・歩行フレーム別に「その向きを向いたキャラ画像」を生成/用意する。
-- 画像透過では背景に接続した黒だけを透過し、オブジェクト内部の黒を抜かない。
-- 既存の未コミット変更はユーザーまたは前作業のものとして扱い、勝手に戻さない。
-
-## トークン集計/節約
-
-- 作業開始は `Tools/TokenUsage/start-task-token-check.ps1 -Task "<依頼内容>" -UiPercent <開始%> [-BudgetTokens <推定枠tokens>]` を優先する。
-- 作業終了は `Tools/TokenUsage/end-token-check.ps1 -CurrentPercent <現在%>` を使う。
-- レポート外消費は `Tools/TokenUsage/record-untracked-usage.ps1` で手動記録する。
-- 日別確認は `Tools/TokenUsage/token-report-summary.ps1 -Path TokenReports/YYYY-MM-DD.jsonl -Top <件数>` を使う。
-- Heavyベンチは明示時だけ実行する。
+- `unicli exec Console.GetLog --logType Error --maxCount 30`: `logs: []`、`totalCount: 0`。
+- `git diff --check -- Assets\AreaSurvivors\Editor\AdvancedWeaponsSetup.cs Assets\AreaSurvivors\Scripts\Game\ArrowRainAreaVisual.cs Assets\AreaSurvivors\Prefabs\Weapons\ArrowRainArea.prefab`: 問題なし。
+- Scene/Prefab差分は大きいため本文diffは読まず、status/stat、対象ファイル確認、Unity Compile/Consoleで確認した。
 
 ## 次チャットの推奨入口
 
 1. `AGENTS.md` を読む。
-2. このノートの「現在の状態」「直近検証」「重要ルール」だけ読む。
-3. 必要なら `TokenReports/UnityReports/skill-tree-layout-20260626-122758.md` を確認する。
-4. 次の作業は、実プレイ確認後のStage 3/4敵サイズ・弓矢射程/サイズ・スキルツリー表示・建造物破壊表示の微調整から着手しやすい。
+2. このノートの「現在の状態」「直近検証」「残す互換/注意」だけ読む。
+3. 次は実プレイで追加武器（特にアローレイン、フロスト、サンダーボール、ブーメランソード）の見た目・当たり判定・塗り範囲を微調整するのが自然。
+4. 必要なら `Assets/AreaSurvivors/Scenes/08_GameTestLauncher.unity` から武器別Stage 1確認を行う。

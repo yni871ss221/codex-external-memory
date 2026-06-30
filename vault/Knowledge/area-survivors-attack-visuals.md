@@ -1,0 +1,32 @@
+---
+date: 2026-06-30
+tags: [knowledge, unity, area-survivors, weapons, animation, sprites]
+project: area-survivors
+related: [[Projects/area-survivors-current]], [[area-survivors-unity-workflow]], [[mistakes]]
+---
+
+# AreaSurvivors 攻撃演出・武器Visualメモ
+
+## 基本方針
+
+- 武器アイコン、HUDアイコン、図鑑アイコン、静的UI画像はScene/Prefab上の参照を正とする。RuntimeでSpriteを差し替えない。
+- 動的なProjectile/Area/EffectはPrefab化し、`WeaponController` / `AdvancedWeaponRuntime` からPrefab参照で生成する。
+- 見た目サイズはScaleではなく、生成PNG、透明余白、Importer、Prefab内Transformで調整する。Projectileの進行方向だけRotation Zを使う。
+
+## アローレインの教訓
+
+- アニメーションが「横並びセット」に見える場合、コード側の落下位相だけで直そうとせず、まずフレームPNG自体を `view_image` などで確認する。
+- 2026-06-30時点では `ArrowRainFrame_0..7.png` が1枚内に横一列の矢を含んでいたため、矢オブジェクトをばらしても横列が増幅された。
+- 修正では、各フレーム画像自体を高い矢/低い矢が混在する散布配置へ再生成し、Prefab上の矢オブジェクト配置もリング状から不規則配置へ変更した。
+- `AdvancedWeaponsSetup.BuildArrowRainOffsets()` も散布配置にして、`ApplyArrowRainArea` 再実行で横列配置へ戻らないようにする。
+
+## エリア攻撃の表示と当たり判定
+
+- 旗、アローレイン、フロストのような床/エリア攻撃は斜め視点に合わせて楕円表示にする。
+- 見た目を楕円にした場合、当たり判定や塗りも円のままだとズレる。`AdvancedWeaponArea` の `verticalRadiusMultiplier` と `TileGrid.PaintEllipse` のように、表示・ダメージ・塗りを同じパラメータに寄せる。
+- 塗り範囲を追加するときは既存の `TileGrid.Paint(...)` と同じ所有権更新経路を使い、Tilemap色を直接触らない。
+
+## 追加武器の確認導線
+
+- 武器追加後の動作確認は `08_GameTestLauncher.unity` を使う。ロビーにボタンを増やしすぎず、テスト用Sceneに武器別Stage 1開始ボタンを置く。
+- 新武器を増やしたら `WeaponCatalog.TestableWeapons`、HUD、レベルアップ候補、武器図鑑、スキルツリーアンロック、GameConfig、Prefab参照、GeneratedSpriteCatalog を合わせて確認する。
