@@ -30,3 +30,9 @@ related: [[Projects/area-survivors-current]], [[area-survivors-unity-workflow]],
 
 - 武器追加後の動作確認は `08_GameTestLauncher.unity` を使う。ロビーにボタンを増やしすぎず、テスト用Sceneに武器別Stage 1開始ボタンを置く。
 - 新武器を増やしたら `WeaponCatalog.TestableWeapons`、HUD、レベルアップ候補、武器図鑑、スキルツリーアンロック、GameConfig、Prefab参照、GeneratedSpriteCatalog を合わせて確認する。
+## 2026-07-02 楕円エリアVisualの基準
+
+- 旗、フロスト、アローレイン、サンダーボールなどの楕円範囲攻撃は、VisualのRotation X/Yを0にする。斜め視点らしく見せる目的で `Rotation X = -40` のような固定回転を入れると、表示範囲と当たり判定/塗り範囲がずれる。
+- 当たり判定、塗り、表示は同じ楕円パラメータを使う。セル塗りは「楕円に少しでも重なるセルを塗る」を基準にする。
+- アウトライン幅、透明度、Sorting Orderなどユーザーが調整したい見た目値はPrefab/SceneのInspectorを正とし、Runtimeで固定値へ戻さない。
+- 監視塔の範囲表示も同じ考え方にする。範囲Spriteは地面側に表示し、キャラクター、建造物、武器本体より手前に出さない。

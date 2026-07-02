@@ -63,3 +63,10 @@ unicli exec PlayMode.Exit
 - `GameManager` / `GameHudController` はScene配置済みHUDの参照取得、値更新、ボタン接続、表示/非表示切替だけを担当する。
 - 未取得武器など状態で空にしたいHUDは、パネル枠をSceneに残し、子要素の表示切替で空表示にする。Scene上の位置・サイズ・SpriteをRuntimeで補正しない。
 - HUDアイコンの見た目がずれる場合はRectTransformだけで補正せず、元Spriteの透明余白と縦横比を確認し、必要ならHUD専用Spriteを `Assets/AreaSurvivors/Sprites/Generated` に作る。
+
+## 2026-07-02 Runtime/Editor再生成の制限
+
+- ユーザーがScene上で調整したロビー、ゲーム終了画面、HUD、範囲Visualなどの配置・サイズ・Sorting・RotationはScene/Prefabを正とする。
+- 一時的にEditor生成ツールでSceneを整える場合、確認後に不要なメニュー/Runner/Builderを削除または無効化する。残す場合は、既存レイアウトを初期化しないことを明示的に保証する。
+- `LobbySceneBuilder` のように旧レイアウトへ戻す可能性があるツールは恒久メニューとして残さない。
+- Runtimeコードでは、既存Scene/Prefabの位置、サイズ、Sprite、Collider、Scale、Rotation、Sortingを固定値に戻さない。必要な値はPrefab/Scene上のInspectorで編集可能にする。

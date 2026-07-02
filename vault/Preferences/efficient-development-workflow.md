@@ -105,3 +105,8 @@ related: [[Preferences/testing-workflow]], [[Knowledge/area-survivors-unity-work
 - AreaSurvivorsの通常作業開始は `Tools/TokenUsage/start-task-token-check.ps1 -Task "<依頼内容>" -UiPercent <開始%>` を優先する。
 - `rule-router.ps1` の判定を先に出してから開始マーカーを記録するため、読むルールを絞りつつTokenReports外消費の開始点も残せる。
 - スキルツリー/HUD/Scene確認は全文diffではなくReporterを優先する。スキルツリーは `run-unity-report.ps1 -Report skill-tree-layout` を使う。
+## 2026-07-02 積み残しTODOとScene正運用
+
+- 作業に積み残しがある場合は、最終回答に `TODO` として必ず明記する。確認後に水平展開、確認後に不要機能削除、後続検証、派生修正が残る場合も対象にする。
+- Scene/PrefabをユーザーがInspectorで調整した後は、その値をRuntimeやEditorメニューで固定初期化しない。特にUIレイアウト、範囲VisualのSorting/アウトライン/Rotation、Source ImageはScene/Prefabを正とする。
+- 一時Editor Runner/BuilderでSceneを整えた場合、恒久的に必要でなければ作業後に削除する。残すなら「既存配置を戻さない」ことをコード上でもルール上でも確認する。
