@@ -70,3 +70,10 @@ unicli exec PlayMode.Exit
 - 一時的にEditor生成ツールでSceneを整える場合、確認後に不要なメニュー/Runner/Builderを削除または無効化する。残す場合は、既存レイアウトを初期化しないことを明示的に保証する。
 - `LobbySceneBuilder` のように旧レイアウトへ戻す可能性があるツールは恒久メニューとして残さない。
 - Runtimeコードでは、既存Scene/Prefabの位置、サイズ、Sprite、Collider、Scale、Rotation、Sortingを固定値に戻さない。必要な値はPrefab/Scene上のInspectorで編集可能にする。
+
+## 2026-07-06 HUD/静的UIレイアウト保護
+
+- HUD、ロビー、テスト画面、所持レリック画面など、ユーザーがScene上で調整する静的UIはScene/Prefabを唯一の正とする。
+- Runtime、Editor Menu、Setup、Rebuild、Restore、Normalize、Validator、Importer、Migrationのどれであっても、既存UIのRectTransform/Transformレイアウト値を固定値へ戻さない。
+- 既存HUD/静的UIに対して許可されるのは、数値更新、表示/非表示、色、透明化用コンポーネント、参照フィールドなど、レイアウトを変えない変更に限る。
+- HUD系Editorコードを触ったら、`GameHudLayoutMutationGuard` の検出対象になる名前や処理を確認し、既存HUDの位置/サイズ/Scale/Rotation/Sprite変更入口を残さない。

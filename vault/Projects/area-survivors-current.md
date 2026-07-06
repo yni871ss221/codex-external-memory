@@ -1,7 +1,7 @@
 ---
 title: AreaSurvivors Current
 type: project-current
-updated: 2026-07-02
+updated: 2026-07-06
 tags:
   - project/area-survivors
   - codex/current
@@ -87,3 +87,24 @@ related:
 1. `AGENTS.md` を読む。
 2. このノートの「2026-07-02 作業終了時点」と `Knowledge/mistakes.md` の2026-07-02追記だけ確認する。
 3. Scene/Prefab上のユーザー調整を正として扱い、RuntimeやEditorメニューで既存UI/Visualの位置・サイズ・Rotation・Sortingを戻さない。
+
+## 2026-07-06 作業終了時点
+
+- Current Branch: `feature/02_GameSystemUpdate`。
+- 敵全般に常時縦Scaleのバウンドアニメーションを追加し、0.5秒で膨らむ→0.5秒で戻るテンポへ調整した。
+- Stage 1〜4ボスに専用攻撃を追加した。オークキングはターゲット方向へ連続衝撃波、ゴブリンロードは闇の玉、リッチは召喚魔法陣からスケルトン/スケルトンナイト召喚、ドラゴンは溜めブレス火球と爆発を行う。
+- ボス攻撃画像・効果音・赤色攻撃範囲表示・テスト起動導線を整備し、テスト画面からステージ/ボス出現方向/武器/レリック状態を確認できるようにした。
+- ロビーを整理し、テスト用ボタンの製品版非表示、ステージ難易度1〜5、クリア後ステージ解放ポップアップ、MISSION COMPLETE演出、トークン/累計撃破/プレイ回数表示、戻る系アイコン統一を実装した。
+- 中心塔スキルに塗りエリア500到達ごとのトークン獲得を追加し、プレイヤープレハブ基準のトークン取得ポップアップと効果音を実装した。
+- HUDに所持レリック横並びパネル、発動中アウトライン/バウンス、非発動白黒、ツールチップを追加した。所持レリック一覧とHUD表示順はレア度順かつ強化ジャンル順へ整理した。
+- レリックにレジェンダリーを追加し、出現率/被りトークンを `Common 50%/5`、`Uncommon 30%/10`、`Rare 15%/30`、`Legendary 5%/50` に変更した。近接3種、遠距離3種、魔法3種、累計撃破1000ごとの攻撃力上昇レリックを追加した。
+- HUD/テスト画面の文字可読性、レリックアイコンサイズ、取得済み/未取得表示、武器装備時のみ活性扱いにするレリック判定を調整した。
+- HUDレイアウトをRuntime/Editorメニューで固定値へ戻す処理を削除・抑止し、`GameHudLayoutMutationGuard` と `Docs/AgentRules/ui-and-hud.md` の禁止ルールを強化した。
+- 直近検証: `git diff --check -- Assets\AreaSurvivors\Scripts Assets\AreaSurvivors\Editor Docs\AgentRules AGENTS.md` は警告のみ。`unicli exec PlayMode.Exit` 成功。`unicli exec Compile` 成功、`0 errors / 0 warnings`。`unicli exec Console.GetLog --logType Error --maxCount 30` は0件。
+
+## 次チャットの推奨入口
+
+1. `AGENTS.md` を読む。
+2. このノートの「2026-07-06 作業終了時点」と `Knowledge/mistakes.md` の2026-07-06追記を確認する。
+3. HUD/ロビー/テスト画面/所持レリック画面の配置はSceneを正とし、RuntimeやEditorメニューでRectTransform、Scale、Rotation、Spriteを固定値へ戻さない。
+4. 次に自然なのは、製品版ビルド確認、ボス攻撃の実プレイ微調整、レリック効果の数値バランス調整。

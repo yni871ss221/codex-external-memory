@@ -104,3 +104,14 @@ related:
 - ロビー倍速モード削除、LobbySceneBuilder削除、GameEnd系Editor生成メニュー無効化により、手調整済みSceneレイアウトが再生成で戻るリスクを下げた。
 - リザードマン左右アニメ、ボスYソート、ゲーム終了時SE停止、HUD透明化、破壊建造物の開始時リセット、GoblinLord白背景、ノックバック耐性、ダメージ表記などの不具合を修正した。
 - 直近検証: `unicli exec Compile` 成功、`0 errors / 0 warnings`。Consoleログ0件。
+
+## 2026-07-06
+
+- 敵全般の常時バウンドと、Stage 1〜4ボス専用攻撃を実装した。オークキング衝撃波、ゴブリンロード闇の玉、リッチ召喚魔法陣、ドラゴンブレス火球/爆発を追加し、各種画像・効果音・攻撃範囲・ターゲット処理を接続した。
+- ボス/武器/レリックのテスト起動画面を拡張し、ボス出現方向指定、ステージ別開始、レリック取得状態切替、取得済み/未取得の視認性改善を追加した。
+- ロビーを整理し、ステージ難易度、ステージ解放ポップアップ、MISSION COMPLETE、トークン/撃破/プレイ回数表示、戻る系アイコン統一、製品版でのテストボタン非表示を実装した。
+- レリックHUD、ツールチップ、所持レリック一覧の並び順、発動中/非発動表示、武器装備条件つき活性判定、レジェンダリー4種と出現率/被りトークンを追加した。
+- 塗りエリア到達トークン獲得スキルと、プレイヤープレハブ基準のトークン取得ポップアップを追加した。
+- HUD/テスト画面/レリックUIの文字可読性やアイコンサイズを調整した。
+- HUDレイアウトをRuntime/Editorで戻すミスを受け、既存HUDのRectTransform/Transform/Sprite/Collider/Scale/Rotation上書きを禁止するルールと `GameHudLayoutMutationGuard` を追加した。
+- 直近検証: `git diff --check` は警告のみ。`unicli exec PlayMode.Exit` 成功。`unicli exec Compile` 成功、`0 errors / 0 warnings`。Console Error 0件。

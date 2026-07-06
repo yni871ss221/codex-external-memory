@@ -110,3 +110,9 @@ related: [[Preferences/testing-workflow]], [[Knowledge/area-survivors-unity-work
 - 作業に積み残しがある場合は、最終回答に `TODO` として必ず明記する。確認後に水平展開、確認後に不要機能削除、後続検証、派生修正が残る場合も対象にする。
 - Scene/PrefabをユーザーがInspectorで調整した後は、その値をRuntimeやEditorメニューで固定初期化しない。特にUIレイアウト、範囲VisualのSorting/アウトライン/Rotation、Source ImageはScene/Prefabを正とする。
 - 一時Editor Runner/BuilderでSceneを整えた場合、恒久的に必要でなければ作業後に削除する。残すなら「既存配置を戻さない」ことをコード上でもルール上でも確認する。
+
+## 2026-07-06 HUD調整の絶対禁止ライン
+
+- HUDや静的UIの位置調整はユーザーがEditorで行う。Codexは既存UIのRectTransform、Transform、Scale、RotationをRuntime/Editorツールで補正・復元・正規化しない。
+- 「見た目がずれた」場合でも、コードで座標を戻さず、まず現在のScene値と参照関係を確認する。
+- Editorメニューを使う場合は、既存レイアウトを書き換えないことをコードパスで確認してから実行する。

@@ -156,3 +156,13 @@ related: [[Preferences/language]]
 **NG Action**: 「確認後に水平展開」「確認後に不要機能を削除」「後続検証」などの残作業があるのに、最終回答でTODOとして明記しないまま次作業へ進むリスクがあった。
 **Correct Action**: 作業に積み残しがある場合は、最終回答に `TODO` として必ず明記する。積み残しがない場合は不要だが、曖昧なままにしない。
 **Trigger**: ユーザー確認待ち、水平展開予定、後続検証、不要機能削除、派生修正が残る作業を終えるとき。
+
+2026-07-06: HUDレイアウトをEditor/Runtime側で戻す処理を残した
+**NG Action**: ユーザーがEditor上で調整した所持レリックHUDなどの位置を、EditorセットアップやRuntime側の固定値処理で元の配置へ戻してしまう入口を残した。
+**Correct Action**: AreaSurvivorsのHUD/ロビー/テスト画面/所持レリック画面など静的UIはScene/Prefabを唯一の正とする。既存UIに対して、Runtime/Editor Menu/Setup/Rebuild/Restore/Normalize/Validator/Importer/MigrationのどれであってもRectTransform、Transform、Scale、Rotation、Spriteを固定値へ戻さない。
+**Trigger**: HUD、ロビー、テスト画面、所持レリック画面、ゲーム終了画面など、ユーザーがSceneで位置や見た目を調整するUIを変更するとき。
+
+2026-07-06: ボタン背景色をUiSelectionHighlightに戻された
+**NG Action**: テスト画面のレリック取得状態ボタンで `Image.color` だけを変えたが、`UiSelectionHighlight` が保持している通常背景色を更新せず、毎フレーム元の色へ戻る状態にした。
+**Correct Action**: `UiSelectionHighlight` 等、背景色を保持・再適用するコンポーネントが付いたUIでは、見た目の色を変えるときに対象コンポーネントの通常色も同期する。単純な `Image.color` 変更だけで完了扱いしない。
+**Trigger**: 選択枠、ホバー、選択中表示、取得状態表示など、UIコンポーネントが背景色を管理するボタン/パネルの色を動的更新するとき。
