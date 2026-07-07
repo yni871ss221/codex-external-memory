@@ -1,4 +1,4 @@
----
+﻿---
 date: 2026-06-30
 tags: [knowledge, unity, area-survivors, weapons, animation, sprites]
 project: area-survivors
@@ -36,3 +36,12 @@ related: [[Projects/area-survivors-current]], [[area-survivors-unity-workflow]],
 - 当たり判定、塗り、表示は同じ楕円パラメータを使う。セル塗りは「楕円に少しでも重なるセルを塗る」を基準にする。
 - アウトライン幅、透明度、Sorting Orderなどユーザーが調整したい見た目値はPrefab/SceneのInspectorを正とし、Runtimeで固定値へ戻さない。
 - 監視塔の範囲表示も同じ考え方にする。範囲Spriteは地面側に表示し、キャラクター、建造物、武器本体より手前に出さない。
+
+## 2026-07-07 Projectile Prefab化メモ
+
+- Slash、TowerCannonball、ProjectileImpact、ProjectileExplosionHitboxはPrefab化済み。動的攻撃はPrefab参照からInstantiateし、RuntimeでGameObjectやColliderを一から組み立てない。
+- 弾本体のSprite、Collider、Prefab内ScaleはPrefabを正とする。`Projectile.EnsureVisibleProjectile` では不足時に名前からSpriteをロードして補完しない。
+- Arrow/PlayerArrowはBoxCollider2Dで矢全体を覆う。円Colliderへ戻すと矢先や軸の当たり判定が狭くなりやすい。
+- Fireballの表示SpriteはPrefabの `PaperMeshVisual.sourceSprite` と `Projectile.fallbackSprite` に正しいGenerated Sprite GUIDを持たせる。Runtimeで `GeneratedSpriteLoader.Load("Fireball")` に依存しない。
+- TowerCannonballはユーザーがPrefab上でColliderを弾サイズに合わせて調整する。RuntimeはCollider半径、Offset、Prefab Scaleを上書きしない。進行方向に合わせるRotation Zのみ許容する。
+- 爆発Hitboxは攻撃ステータス依存のため `ProjectileExplosionHitbox` がPrefabをInstantiate後にCircleCollider2D.radiusだけ設定する。これは範囲仕様そのものなので例外的にRuntime設定可。

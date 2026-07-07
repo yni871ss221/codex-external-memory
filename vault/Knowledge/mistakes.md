@@ -1,4 +1,4 @@
----
+﻿---
 date: 2026-05-28
 tags: [codex, mistakes, behavior]
 project: codex-external-memory
@@ -166,3 +166,13 @@ related: [[Preferences/language]]
 **NG Action**: テスト画面のレリック取得状態ボタンで `Image.color` だけを変えたが、`UiSelectionHighlight` が保持している通常背景色を更新せず、毎フレーム元の色へ戻る状態にした。
 **Correct Action**: `UiSelectionHighlight` 等、背景色を保持・再適用するコンポーネントが付いたUIでは、見た目の色を変えるときに対象コンポーネントの通常色も同期する。単純な `Image.color` 変更だけで完了扱いしない。
 **Trigger**: 選択枠、ホバー、選択中表示、取得状態表示など、UIコンポーネントが背景色を管理するボタン/パネルの色を動的更新するとき。
+
+2026-07-07: Projectile Prefab化後もRuntime Sprite補完を残した
+**NG Action**: Fireball PrefabのSprite参照が壊れているのに、`Projectile.EnsureVisibleProjectile` の名前ベース `GeneratedSpriteLoader.Load("Fireball"/"Arrow")` フォールバックで実行時に見える状態を作り、Prefab上で画像が見えない問題を隠した。
+**Correct Action**: 攻撃PrefabのSprite、Collider、Prefab内ScaleはPrefabを正とする。Prefab上で画像やColliderが確認できない場合はPrefab参照/GUIDを修正し、Runtimeの名前ベース補完で隠さない。
+**Trigger**: AreaSurvivorsでProjectile、着弾演出、爆発Hitbox、攻撃Prefab、Sprite参照を追加・Prefab化・修正するとき。
+
+2026-07-07: Prefab化した中心塔砲弾の参照をScene直置き中心塔へ反映し忘れた
+**NG Action**: `CenterTower.prefab` には `TowerCannonController.projectilePrefab` を設定したが、`05_Game.unity` の直置きCenterTowerには同コンポーネント/参照がなく、Runtimeの `AddComponent` で空のControllerが追加されてProjectile Prefab missingになった。
+**Correct Action**: Scene直置きオブジェクトとPrefabが混在する対象では、Prefabだけでなく実際にGameManager等が参照するSceneインスタンスにも必要コンポーネント/Prefab参照が入っているか確認する。Runtimeで空コンポーネントを足して不足参照を隠さない。
+**Trigger**: AreaSurvivorsで中心塔、Player、Scene直置き建造物、Prefab参照を追加・移行・Prefab化するとき。

@@ -1,4 +1,4 @@
----
+﻿---
 date: 2026-06-20
 tags:
   - project/area-survivors
@@ -115,3 +115,15 @@ related:
 - HUD/テスト画面/レリックUIの文字可読性やアイコンサイズを調整した。
 - HUDレイアウトをRuntime/Editorで戻すミスを受け、既存HUDのRectTransform/Transform/Sprite/Collider/Scale/Rotation上書きを禁止するルールと `GameHudLayoutMutationGuard` を追加した。
 - 直近検証: `git diff --check` は警告のみ。`unicli exec PlayMode.Exit` 成功。`unicli exec Compile` 成功、`0 errors / 0 warnings`。Console Error 0件。
+
+## 2026-07-07
+
+- スキルツリー大幅調整を開始し、プレイヤー/建造物/中心塔の配置、接続線、必要トークン、強化回数、強化内容を仕様に合わせて整理した。
+- 永続強化画面をScene全体スキルツリー化し、固定ヘッダー、ツールチップ、ズーム/パン、パネル内レベル表示、MAXアウトライン表示、アンロック可能ノードのみ表示を実装した。
+- オプション画面を一般/サウンド/グラフィック/コントロールのパネル構成へ変更し、ウィンドウ/フルスクリーン、解像度プリセット、カスタムサイズ表示を追加した。
+- 終了時トークン獲得を見直し、固定獲得、敵10体撃破ごと、30秒経過ごとの獲得を追加。序盤で最初のスキルを獲得しやすくした。
+- 難易度5の負荷調査と最適化を行い、敵アニメMesh作成、Meshキャッシュ、敵陣地塗り頻度間引き、敵アニメLOD、YSort/アウトライン更新抑制、接触判定最適化を実施した。
+- ビルドで不足していたシェーダをAlways Included Shadersへ追加し、敵アウトライン、建物裏シルエット、ヒット時白フラッシュのビルド反映を修正した。
+- Slash、TowerCannonball、ProjectileImpact、ProjectileExplosionHitboxをPrefab化し、弓/火球/砲弾の着弾演出・爆発HitboxをPrefab参照生成へ移行した。
+- Arrow/PlayerArrowをBoxCollider2D化し、FireballのPrefab Sprite参照を修正。TowerCannonballはユーザー調整済みColliderとPrefabサイズをRuntimeで上書きしないようにした。
+- 直近検証: `unicli exec Compile` 成功、`0 errors / 0 warnings`。Consoleログ0件。ユーザー実機確認で難易度5の負荷、陣地塗り見た目、YSort、矢/砲弾当たり判定は問題なし。

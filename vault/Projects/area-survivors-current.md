@@ -1,7 +1,7 @@
----
+﻿---
 title: AreaSurvivors Current
 type: project-current
-updated: 2026-07-06
+updated: 2026-07-07
 tags:
   - project/area-survivors
   - codex/current
@@ -108,3 +108,25 @@ related:
 2. このノートの「2026-07-06 作業終了時点」と `Knowledge/mistakes.md` の2026-07-06追記を確認する。
 3. HUD/ロビー/テスト画面/所持レリック画面の配置はSceneを正とし、RuntimeやEditorメニューでRectTransform、Scale、Rotation、Spriteを固定値へ戻さない。
 4. 次に自然なのは、製品版ビルド確認、ボス攻撃の実プレイ微調整、レリック効果の数値バランス調整。
+
+## 2026-07-07 作業終了時点
+
+- Current Branch: `feature/02_GameSystemUpdate`。
+- スキルツリーの大幅調整を実施した。プレイヤー/建造物/中心塔スキルのNo配置、接続線、必要トークン、強化回数、強化内容を整理し、後半ネタバレ防止としてアンロック可能ノードと接続線のみ表示する仕様にした。
+- 永続強化画面は背景パネルではなくScene全体をスキルツリーとして扱い、固定ヘッダー、所持トークン表示、ズーム/パン、ツールチップ、スキルパネル内レベル表示、MAX時アウトライン色を整備した。
+- オプション画面を一般/サウンド/グラフィック/コントロールの縦スクロール構成へ整理し、フルスクリーン/ウィンドウ、解像度プリセット、手動リサイズ時カスタム扱いを追加した。
+- トークン獲得仕様を調整した。終了時固定獲得、敵10体撃破ごとの獲得、30秒経過ごとの獲得を追加し、序盤で最初のスキルへ届くようにした。
+- 難易度5の負荷調査と最適化を実施した。敵アニメMesh作成、Meshキャッシュ、敵陣地塗り頻度間引き、敵アニメ更新LOD、YSort/アウトライン更新抑制、接触判定最適化を進め、ユーザー確認で難易度5が重くない状態まで改善した。
+- ビルド時に抜けていたシェーダをAlways Included Shadersへ追加し、敵アウトライン、建物裏シルエット、ヒット時白フラッシュがビルドでも出るよう整理した。
+- Slash、TowerCannonball、ProjectileImpact、ProjectileExplosionHitboxをPrefab化した。弓/火球/中心塔砲弾の着弾演出と爆発HitboxはPrefab参照から生成し、RuntimeでGameObject構築しない方針へ寄せた。
+- Arrow/PlayerArrowはBoxCollider2Dへ変更し、矢全体に当たり判定を持たせた。FireballはPrefab上のSprite参照を正しいGenerated Sprite GUIDへ修正した。TowerCannonballはユーザー調整済みColliderを正とし、RuntimeでScale/Colliderを上書きしない。
+- ゲーム終了画面でレジェンダリーレリックの取得欄アイコンが出ない問題を修正した。
+- 直近検証: `unicli exec Compile` 成功、`0 errors / 0 warnings`。`unicli exec Console.GetLog` は0件。ユーザー確認で難易度5の重さ、敵陣地塗り見た目、YSort、弓/砲弾当たり判定は問題なし。
+- `git diff --check` はUnity YAML由来の `m_Name: ` / `m_EditorClassIdentifier: ` trailing whitespace を多数検出。Unity Scene/Prefabシリアライズ由来のため、今回は機械的整形せず既知警告扱い。
+
+## 次チャットの推奨入口
+
+1. `AGENTS.md` を読む。
+2. このノートの「2026-07-07 作業終了時点」と `Knowledge/mistakes.md` の2026-07-07追記を確認する。
+3. 次はビルド版で弓、Fireball、TowerCannonball、敵アウトライン、建物裏シルエット、ヒットフラッシュを通し確認するのが自然。
+4. 攻撃Prefabを触る場合は、Sprite/Collider/ScaleはPrefabを正とし、Runtimeは進行方向Rotation Z、ステータス依存の爆発半径など必要最小限に限定する。
