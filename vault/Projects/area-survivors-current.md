@@ -1,7 +1,7 @@
-﻿---
+---
 title: AreaSurvivors Current
 type: project-current
-updated: 2026-07-07
+updated: 2026-07-09
 tags:
   - project/area-survivors
   - codex/current
@@ -20,7 +20,7 @@ related:
 - Main Scene: `Assets/AreaSurvivors/Scenes/05_Game.unity`
 - Gameplay Test Scene: `Assets/AreaSurvivors/Scenes/90_GameplayTest.unity`
 - Current Branch: `feature/02_GameSystemUpdate`
-- Worktree at closeout: 2026-06-30作業分をまとめてcommit/push予定。`tmp/` と `__pycache__/` は `.gitignore` へ追加し、コミット対象から除外する。
+- Worktree at closeout: 2026-07-09作業分をまとめてcommit/push予定。Scene/Prefabのユーザー調整を正として扱う。
 - Reboot status: Phase 0〜7完了後の追加UI/音声/コライダー/建造物/武器拡張フェーズ。
 
 ## 2026-06-30 完了内容
@@ -130,3 +130,30 @@ related:
 2. このノートの「2026-07-07 作業終了時点」と `Knowledge/mistakes.md` の2026-07-07追記を確認する。
 3. 次はビルド版で弓、Fireball、TowerCannonball、敵アウトライン、建物裏シルエット、ヒットフラッシュを通し確認するのが自然。
 4. 攻撃Prefabを触る場合は、Sprite/Collider/ScaleはPrefabを正とし、Runtimeは進行方向Rotation Z、ステータス依存の爆発半径など必要最小限に限定する。
+
+## 2026-07-09 作業終了時点
+
+- Current Branch: `feature/02_GameSystemUpdate`。
+- オプション画面をタイトル/ゲーム内で縦スクロール構成に整理し、一般/サウンド/グラフィック/コントロール、表示モード/ウィンドウサイズ、設定初期化、タイトル専用データ初期化ダイアログを実装した。
+- キーボード/マウスとコントローラーのキーコンフィグを追加し、入力待ち方式、×決定/〇キャンセル、ゲーム中キャンセルで一時停止、音量選択中の左右1%変更、フォーカス自動追従を調整した。
+- 全画面共通のUIフォーカス移動を見直し、画面外へフォーカスが消えにくく、マウス操作とパッド操作の優先を切り替えるよう整理した。マウススクロール時はスクロールを優先し、パッド移動時だけ追従する。
+- スキルツリーに開幕レベルアップを追加し、画像生成アイコンを割り当てた。獲得済み回数に応じてゲーム開始時にレベルアップパネルを複数回表示する。
+- 難易度アンロックを調整し、初回ボス撃破時は難易度1〜2解放、以後は難易度2/3/4ボス撃破で次難易度を解放しつつゲーム継続する仕様にした。
+- トークン獲得ログをゲームフォルダ配下 `logs` に出力し、到達ステージ、ボスクリア情報、補助的なランタイム/Material診断ログを残すようにした。
+- ビルド実行時の中心塔破壊クラッシュ調査から、建造物完成色のMaterial増殖を `MaterialPropertyBlock` / `sharedMaterials` へ置き換えて対策した。ログ上の使用メモリは大幅に改善した。
+- 敵/建造物アウトラインを黒塗りつぶし方式へ寄せ、ヒット時白ハイライトと建物裏シルエットも同じ領域を使うよう調整した。シルエットは視認上カクつかない更新頻度へ戻した。
+- ファイアボール軌道の床塗りを復旧した。監視塔破壊時の赤床は陣地消失による見え方で仕様上問題なしと判断した。
+- スラッシュ攻撃範囲を初期時点から広げ、レベルアップごとの伸び幅を調整した。Prefab側の当たり判定/見た目を正としつつ横幅と距離のバランスを取った。
+- オークキング衝撃波は倍率1の24ダメージへ戻し、固定値ダメージ追加フィールドは削除した。ゴブリンロード闇玉は多段Hitを考慮して1Hit 12ダメージ相当へ半減した。
+- プレイヤー復活後の無敵を2秒にし、復活直後は床ペナルティも受けない。レベルアップごとにHP+10、移動速度+0.1、防御力+0.5を得るようにした。
+- ゲーム終了画面は親パネル単位の段階表示へ変更し、ボス初回撃破時は崩壊アニメーション後にトークン/宝箱/レリック獲得を済ませてからリザルトへ遷移する。
+- 日本語漢字が簡体字風に見える問題へ、Windowsの日本語フォントをRuntime/Editorプレビュー双方で適用する仕組みを追加した。
+- 直近検証: 複数回 `unicli exec Compile` 成功。HUD Layout Mutation Guard 実行済み。ユーザー実機確認で、フォント文字化け、スラッシュ伸び幅、ヒット時優先度、シルエット、ファイアボール塗り、操作系の主要修正は概ね確認済み。
+- 既知注意: `git diff --stat` 上、Scene/Prefab差分が大きい。ユーザーがEditorで調整したHUD/オプション/ロビー/スキルツリー配置を戻さないこと。
+
+## 次チャットの推奨入口
+
+1. `AGENTS.md` を読む。
+2. このノートの「2026-07-09 作業終了時点」と `Knowledge/area-survivors-ui-navigation.md`、`Knowledge/mistakes.md` の2026-07-09追記を確認する。
+3. 次はビルド版で長時間プレイし、`Build/logs/application.log` と `Build/logs/token_run_log.jsonl` を使ってトークン獲得量とクラッシュ再発有無を確認するのが自然。
+4. UIを触る場合はScene/Prefab上の配置を正とし、Runtime/EditorセットアップでRectTransform、Sprite、Collider、Scale、Rotationを戻さない。

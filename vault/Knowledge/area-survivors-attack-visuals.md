@@ -1,4 +1,4 @@
-﻿---
+---
 date: 2026-06-30
 tags: [knowledge, unity, area-survivors, weapons, animation, sprites]
 project: area-survivors
@@ -45,3 +45,11 @@ related: [[Projects/area-survivors-current]], [[area-survivors-unity-workflow]],
 - Fireballの表示SpriteはPrefabの `PaperMeshVisual.sourceSprite` と `Projectile.fallbackSprite` に正しいGenerated Sprite GUIDを持たせる。Runtimeで `GeneratedSpriteLoader.Load("Fireball")` に依存しない。
 - TowerCannonballはユーザーがPrefab上でColliderを弾サイズに合わせて調整する。RuntimeはCollider半径、Offset、Prefab Scaleを上書きしない。進行方向に合わせるRotation Zのみ許容する。
 - 爆発Hitboxは攻撃ステータス依存のため `ProjectileExplosionHitbox` がPrefabをInstantiate後にCircleCollider2D.radiusだけ設定する。これは範囲仕様そのものなので例外的にRuntime設定可。
+
+## 2026-07-09 Slash / Projectile / Boss攻撃メモ
+
+- スラッシュは `slashRange` だけを伸ばすと前方距離だけ強調され、横幅が狭く見える。見た目と当たり判定はPrefab/SlashView側の縦横バランスを確認し、横幅と距離をセットで調整する。
+- スラッシュのレベルアップ伸び幅は見た目に分かる量が必要。微増だとユーザー確認で変化が見えないため、現在はレベルごとに0.2増える設計へ寄せた。
+- Fireballの軌道塗りはProjectileの移動経路で床塗り処理が呼ばれるかを確認する。Prefab化やProjectile共通化で塗り呼び出しが外れると、見た目は飛んでも床が青くならない。
+- ボス攻撃のダメージは接触攻撃力から倍率で出す方針を維持する。固定値フィールドを安易に追加すると調整軸が増えるため、必要がなければ倍率で表現する。
+- 多段Hitする攻撃（ゴブリンロード闇玉など）は1Hit値だけでなく、滞在時間中の累計Hitを基準に調整する。

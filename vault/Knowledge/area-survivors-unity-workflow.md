@@ -77,3 +77,10 @@ unicli exec PlayMode.Exit
 - Runtime、Editor Menu、Setup、Rebuild、Restore、Normalize、Validator、Importer、Migrationのどれであっても、既存UIのRectTransform/Transformレイアウト値を固定値へ戻さない。
 - 既存HUD/静的UIに対して許可されるのは、数値更新、表示/非表示、色、透明化用コンポーネント、参照フィールドなど、レイアウトを変えない変更に限る。
 - HUD系Editorコードを触ったら、`GameHudLayoutMutationGuard` の検出対象になる名前や処理を確認し、既存HUDの位置/サイズ/Scale/Rotation/Sprite変更入口を残さない。
+
+## 2026-07-09 ビルドログと診断ログ
+
+- ビルド配布時の調査をしやすくするため、アプリログとトークン獲得ログは実行ファイルと同階層の `logs` フォルダへ出す。AppData配下だけに頼るとユーザー共有が難しい。
+- クラッシュ調査では `Player.log` と `application.log` の両方を見る。中心塔破壊などシーン遷移直前クラッシュでは、直前のRuntime object snapshot、Material/Memory診断、GameOver遷移ログが重要。
+- UnityのMaterial数は環境やAPIによってRuntimeで直接取得できない場合があるため、`TotalUsedMemory`、Renderer数、material slot数、unique shared material数、対象コンポーネント数を補助ログとして残す。
+- `renderer.material` / `renderer.materials` はMaterialインスタンスを複製しうる。色変更だけなら `MaterialPropertyBlock` と `sharedMaterials` を優先する。

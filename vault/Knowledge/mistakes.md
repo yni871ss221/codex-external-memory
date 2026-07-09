@@ -1,4 +1,4 @@
-﻿---
+---
 date: 2026-05-28
 tags: [codex, mistakes, behavior]
 project: codex-external-memory
@@ -176,3 +176,23 @@ related: [[Preferences/language]]
 **NG Action**: `CenterTower.prefab` には `TowerCannonController.projectilePrefab` を設定したが、`05_Game.unity` の直置きCenterTowerには同コンポーネント/参照がなく、Runtimeの `AddComponent` で空のControllerが追加されてProjectile Prefab missingになった。
 **Correct Action**: Scene直置きオブジェクトとPrefabが混在する対象では、Prefabだけでなく実際にGameManager等が参照するSceneインスタンスにも必要コンポーネント/Prefab参照が入っているか確認する。Runtimeで空コンポーネントを足して不足参照を隠さない。
 **Trigger**: AreaSurvivorsで中心塔、Player、Scene直置き建造物、Prefab参照を追加・移行・Prefab化するとき。
+
+2026-07-09: UIフォーカス移動を個別画面の場当たり指定で歪ませた
+**NG Action**: シールド追加ノードなど特定パネルへ移動できない問題を、画面全体の移動ルールではなく個別の移動先指定で補正し、ロビーやオプションで右/下入力時に直感と違うボタンへ飛ぶ状態を作った。
+**Correct Action**: AreaSurvivorsのSelectable移動は、アクティブ画面内の可視Selectableだけを対象に、見た目上近い方向へ共通ロジックで選ぶ。個別補正は最後の手段にし、入れる場合も対象画面/対象グループへ閉じる。
+**Trigger**: パッド対応、キーボードナビゲーション、フォーカスが画面外へ消える問題、特定ボタンへ移動できない問題を修正するとき。
+
+2026-07-09: フォーカス追従を毎フレーム判定にしてマウススクロールを阻害した
+**NG Action**: フォーカスが画面外に出ないようにする処理をフレーム更新で走らせ、マウスホイールでスクロールしても少し後にフォーカス位置へ画面が戻る状態にした。
+**Correct Action**: スクロール/パン追従は、パッドやキーボードのフォーカス移動が発生した瞬間だけ行う。マウスホイール、ドラッグ、ポインタホバー中はマウス操作を優先し、自動追従で戻さない。
+**Trigger**: オプション、武器図鑑、レリック図鑑、強化画面など、スクロール/パンとSelectableフォーカスが共存する画面を修正するとき。
+
+2026-07-09: 色変更で `renderer.materials` を使いMaterialを大量複製した
+**NG Action**: バリスタ/壁の完成時色変更などで `renderer.materials` を取得・変更し、RendererごとにMaterialインスタンスが増殖して長時間プレイ時のクラッシュ要因を作った。
+**Correct Action**: Renderer単位の色変更は `MaterialPropertyBlock` と `sharedMaterials` を優先する。Materialインスタンス数やメモリ使用量はビルドログへ補助診断として残す。
+**Trigger**: 建造物完成色、ヒットハイライト、アウトライン、シルエット、状態異常色など、Rendererの色やMaterialプロパティを動的に変えるとき。
+
+2026-07-09: 日本語フォント修正をRuntimeだけに入れてEditor表示を残した
+**NG Action**: ゲーム実行中だけ日本語フォントを差し替え、Editor Scene上では簡体字風の漢字表示やサイズ/位置ずれが残る状態にした。
+**Correct Action**: UIフォント表示を補正する場合はRuntimeとEditorプレビューの両方を用意し、既存TextのfontSizeやRectTransformを変えずFontだけ差し替える。Editor上の見た目も確認対象にする。
+**Trigger**: 日本語フォント、文字化け、漢字の字形、Text/TextMesh表示、Editorプレビュー表示を修正するとき。
