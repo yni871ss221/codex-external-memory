@@ -1,7 +1,7 @@
 ---
 title: AreaSurvivors Current
 type: project-current
-updated: 2026-07-09
+updated: 2026-07-10
 tags:
   - project/area-survivors
   - codex/current
@@ -157,3 +157,25 @@ related:
 2. このノートの「2026-07-09 作業終了時点」と `Knowledge/area-survivors-ui-navigation.md`、`Knowledge/mistakes.md` の2026-07-09追記を確認する。
 3. 次はビルド版で長時間プレイし、`Build/logs/application.log` と `Build/logs/token_run_log.jsonl` を使ってトークン獲得量とクラッシュ再発有無を確認するのが自然。
 4. UIを触る場合はScene/Prefab上の配置を正とし、Runtime/EditorセットアップでRectTransform、Sprite、Collider、Scale、Rotationを戻さない。
+
+## 2026-07-10 作業終了時点
+
+- Current Branch: `feature/02_GameSystemUpdate`。
+- Asset全体を用途別フォルダへ整理し、Prefab、Runtime Script、Editor Script、生成画像、外部素材を移動した。未参照素材と一時Setup/Rebuild/Testメニューを削除し、複数回のユーザー実プレイ確認で問題なし。
+- タイトル画面へクレジット、ゲームスタジオロゴ起動画面、アプリケーションアイコンを追加した。スタジオロゴはアプリ起動時の1回だけ表示し、タイトルへ戻る際は再表示しない。
+- タイトル、強化、武器図鑑、所持レリック、ゲーム終了画面へ背景画像を追加した。ゲーム終了画面は敗北時とクリア時で背景を分けた。
+- タイトル背景はユーザー提供の最終画像を正式採用した。タイトルScene上の既存レイアウトを正とし、位置を戻さない。
+- 自陣と非自陣の境界へ青色境界線を追加した。敵陣の赤境界線は見た目確認後に取り下げ、青境界だけを残した。
+- キーボード/マウスとパッドの入力モード切替、共通フォーカス表示、直感的な方向移動、スクロール追従、Dropdown、Slider、レベルアップ決定処理を共通化・修正した。
+- レベルアップ画面へスキップとリロールを追加した。各ラン3回まで使用でき、残数をボタンへ表示し、0回で無効化する。スキップは強化を取らずに完了し、リロールはパネルを閉じず選択肢だけを再抽選する。
+- スキップ/リロールのフォーカスは、Scene上の既存Image/Outlineだけで明るい背景と太い白アウトラインを表示する。RuntimeでUIやフォーカスVisualを生成しない。
+- `.codex/config.toml` と役割別agent設定を追加したが、運用判断を見直し、サブエージェントはユーザーがその作業で明示指定した場合にだけ使うことを `AGENTS.md` に明記した。
+- 直近検証: UnityのBee/Roslynレスポンスファイルを使ったC#コンパイル成功。`git diff --check` は改行警告のみ。HUD Layout Mutation Guardはスキップ/リロール初期実装時に合格。最終フォーカス調整後はAsset RefreshでUniCLIサーバーが停止し、再実行できていない。
+- TODO: 次チャットでスキップ/リロールをマウス・パッド双方で操作し、各3回、残数0、開幕連続レベルアップ、明るい背景と太い白枠を確認する。Unity/UniCLI復帰後に必要ならHUD Layout Mutation Guardを再実行する。
+
+## 次チャットの推奨入口（2026-07-10）
+
+1. `AGENTS.md` を読む。サブエージェントはユーザーの明示指定がない限り使わない。
+2. このノートの「2026-07-10 作業終了時点」と `Knowledge/mistakes.md` の2026-07-10追記だけ確認する。
+3. 最初にレベルアップ画面のスキップ/リロールをPlay Modeで確認する。
+4. Asset整理後の移動・削除はユーザー確認済み。旧パスへ戻したり、削除済みSetup/Rebuild/Testメニューを復元しない。

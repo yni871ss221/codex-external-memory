@@ -196,3 +196,8 @@ related: [[Preferences/language]]
 **NG Action**: ゲーム実行中だけ日本語フォントを差し替え、Editor Scene上では簡体字風の漢字表示やサイズ/位置ずれが残る状態にした。
 **Correct Action**: UIフォント表示を補正する場合はRuntimeとEditorプレビューの両方を用意し、既存TextのfontSizeやRectTransformを変えずFontだけ差し替える。Editor上の見た目も確認対象にする。
 **Trigger**: 日本語フォント、文字化け、漢字の字形、Text/TextMesh表示、Editorプレビュー表示を修正するとき。
+
+2026-07-10: 軽微なUI修正へサブエージェントを多用して作業時間を肥大化させた
+**NG Action**: レベルアップ画面へスキップ/リロールを追加する密結合な小規模修正で、調査・実装・レビューを複数サブエージェントへ分割し、通信・統合・再検証のオーバーヘッドで約1時間かけた。
+**Correct Action**: AreaSurvivorsでは、ユーザーがその作業でサブエージェント利用を明示指定した場合にだけ使用する。指定がない場合は規模や並列化可能性にかかわらずLeadが単独で対応する。
+**Trigger**: AreaSurvivorsで新しい実装・調査・レビューを開始し、サブエージェントへ委譲するか判断するとき。

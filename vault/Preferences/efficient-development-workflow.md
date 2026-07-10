@@ -116,3 +116,9 @@ related: [[Preferences/testing-workflow]], [[Knowledge/area-survivors-unity-work
 - HUDや静的UIの位置調整はユーザーがEditorで行う。Codexは既存UIのRectTransform、Transform、Scale、RotationをRuntime/Editorツールで補正・復元・正規化しない。
 - 「見た目がずれた」場合でも、コードで座標を戻さず、まず現在のScene値と参照関係を確認する。
 - Editorメニューを使う場合は、既存レイアウトを書き換えないことをコードパスで確認してから実行する。
+
+## 2026-07-10 サブエージェント利用条件
+
+- AreaSurvivorsでは、ユーザーが対象作業で明示的に使用を指定した場合にだけサブエージェントを使う。
+- 明示指定がない作業は、原因調査、大規模変更、独立レビューを含めLeadが単独で対応する。
+- 使用指定がある場合も、小規模で同じScene/同じファイルへ密結合な変更は分割せず、独立した調査や編集範囲が完全に分離できる作業だけを委譲する。
