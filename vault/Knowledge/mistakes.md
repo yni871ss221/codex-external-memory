@@ -201,3 +201,19 @@ related: [[Preferences/language]]
 **NG Action**: レベルアップ画面へスキップ/リロールを追加する密結合な小規模修正で、調査・実装・レビューを複数サブエージェントへ分割し、通信・統合・再検証のオーバーヘッドで約1時間かけた。
 **Correct Action**: AreaSurvivorsでは、ユーザーがその作業でサブエージェント利用を明示指定した場合にだけ使用する。指定がない場合は規模や並列化可能性にかかわらずLeadが単独で対応する。
 **Trigger**: AreaSurvivorsで新しい実装・調査・レビューを開始し、サブエージェントへ委譲するか判断するとき。
+
+
+2026-07-13: 通常作業で検証と再試行を広げ、軽微な変更を長時間化させた
+**NG Action**: ユーザーが時間をかけてよいと指定していない変更で、Compile/Play ModeやUnity操作を必要以上に反復し、軽微な変更でも作業時間を肥大化させた。
+**Correct Action**: 作業規模を問わず、明示許可がない場合はCompile最大2回、Play Mode開始最大2回を標準上限とする。失敗・再試行も回数へ含め、3回目が必要なら変更を止めて読み取り中心の原因調査へ移る。同種コマンド失敗が2回続いたら手打ちをやめ、Wrapper/Runner/Validatorへ部品化する。
+**Trigger**: AreaSurvivorsでUnity Compile、Play Mode、UniCLI、Scene/Prefab検証を伴う作業を行うとき。
+
+2026-07-13: 英語訳の文字列だけ確認し、Scene上の表示幅を確認しなかった
+**NG Action**: タイトル英訳を `AREA SURVIVORS` と登録したが、日本語向けTitle Label幅、折り返し、縦切り捨ての組み合わせを確認せず、実表示が `AREA` だけになった。
+**Correct Action**: ローカライズでは辞書値の正しさだけでなく、長い英語を代表画面で表示し、折り返し、Best Fit、Overflow、RectTransform幅を確認する。静的UIの修正はSceneを正として行う。
+**Trigger**: タイトル、ボタン、HUD見出しなど、日本語より英語が長くなるTextを追加・翻訳・レイアウト調整するとき。
+
+2026-07-13: Opening Storyを高精細に描きすぎ、既存ゲーム画風から外した
+**NG Action**: Opening Story画像へ細かな質感・陰影を入れ、ゲーム本編より高品質で生成AIらしさが目立つ映像にした。
+**Correct Action**: AreaSurvivorsの物語画像は01/05のような太い輪郭、大きな色面、2〜3段階の陰影、控えめなドット密度を基準にする。既存画像は差し替え前にArchiveへ保存する。
+**Trigger**: Opening Story、漫画、背景など、連続して表示する生成画像を新規作成・差し替え・画風統一するとき。

@@ -1,7 +1,7 @@
 ---
 title: AreaSurvivors Current
 type: project-current
-updated: 2026-07-10
+updated: 2026-07-13
 tags:
   - project/area-survivors
   - codex/current
@@ -179,3 +179,35 @@ related:
 2. このノートの「2026-07-10 作業終了時点」と `Knowledge/mistakes.md` の2026-07-10追記だけ確認する。
 3. 最初にレベルアップ画面のスキップ/リロールをPlay Modeで確認する。
 4. Asset整理後の移動・削除はユーザー確認済み。旧パスへ戻したり、削除済みSetup/Rebuild/Testメニューを復元しない。
+
+
+## 2026-07-13 作業終了時点
+
+- Current Branch: `feature/02_GameSystemUpdate`。
+- 強化画面にスキル接続線の伸長と到達先パネルのバウンス、レベルアップ画面に武器アイコン枠、`NEW`装飾、レリック取得風の背面光、生成背景を追加した。
+- ロビー開始時の暗転とゲーム開始時の明転を実装し、開始時レベルアップ等は明転完了後に実行する。ゲーム内アナウンスは全幅パネル上を左から中央、停止後に右へ流れる。
+- バリスタ、中心塔、監視塔は攻撃成立時に上方向へ膨らんで戻るスクワッシュアニメーションを行う。
+- 日英ローカライズを全画面へ展開した。武器HUD、武器名、レリック、スキル、レベルアップ、オプション等は言語変更やデータ更新イベント時だけ更新し、毎フレーム翻訳しない。
+- `Localization Coverage` Validatorを追加し、Production Scene、UI Prefab、スキル説明、武器説明に日本語残存がないことを検証できる。
+- スタジオロゴはアプリ起動セッションの最初だけ表示する。タイトルへ戻った際やEditorでLobbyから開始した場合に再表示されない。
+- 6枚構成のOpening StoryをTitle Sceneと保守Prefabへ実装した。フェード＋連続スライド、任意入力スキップ、36秒BGM、テスト起動メニューからの再生を持つ。
+- Opening Story画像は01/05基準のコミカルなドット絵へ統一し、変更前画像を `External/UI/OpeningStory/Archive/BeforeStyleUnification_20260712` に保存した。
+- Opening Storyの通常起動再生は `RuntimeFeatureFlags.PlayOpeningStoryOnApplicationLaunch = false` で一時無効。Scene、画像、BGM、テスト再生機能は残している。
+- 「初期スラッシュ削除」取得時、空き武器枠があればレベルアップ候補にスラッシュが `NEW` として出現し、選択するとLv1で再取得できる。
+- ユーザーが英語タイトルのTitle Label幅を修正した。翻訳値は `AREA SURVIVORS` だが、旧430px幅では折り返された2行目が切れて `AREA` だけ表示されていた。
+- Steam公開準備では、まずSteamworks登録・Steam Direct費用支払い・Coming Soonページ公開を先行し、生成AI使用はContent SurveyのPre-Generatedとして申告する方針。
+
+## 直近検証（2026-07-13）
+
+- `unicli exec Compile`: 成功、`0 errors / 0 warnings`。
+- `Area Survivors/Validate/HUD Layout Mutation Guard`: 合格。
+- `Area Survivors/Validate/Localization Coverage`: 全Production Scene、UI Prefab、スキル説明、武器説明で合格。
+- `unicli exec Console.GetLog --logType Error --maxCount 30`: Error 0件。
+- `git diff --check -- Assets/AreaSurvivors/Scripts Assets/AreaSurvivors/Editor Docs/AgentRules AGENTS.md`: 問題なし。
+
+## 次チャットの推奨入口（2026-07-13）
+
+1. `AGENTS.md` とこのセクションを読む。
+2. 通常起動で `スタジオロゴ → タイトル` となりOpening Storyが再生されないことを確認する。Storyはテスト起動メニューから確認可能。
+3. 「初期スラッシュ削除」取得データで、レベルアップ候補へスラッシュの `NEW` が出ることを実プレイ確認する。
+4. Steam Coming Soonページ向けに、正式タイトル、価格、カプセル画像、1920x1080ゲームプレイスクリーンショット、日英説明文を準備する。

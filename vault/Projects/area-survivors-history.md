@@ -9,6 +9,20 @@ related:
 
 # AreaSurvivors History
 
+## 2026-07-13
+
+- スキル線伸長、パネルバウンス、ロビー暗転/ゲーム明転、建造物攻撃スクワッシュ、全幅アナウンスなど画面演出を強化した。
+- レベルアップパネルへ武器アイコン枠、`NEW`装飾、背面光、生成背景を追加し、「初期スラッシュ削除」取得後はスラッシュをNEW武器として再取得可能にした。
+- 全画面の日英ローカライズと説明文監査を実施し、更新イベント駆動の反映とLocalization Coverage Validatorを追加した。
+- スタジオロゴをアプリ起動時の1回だけ表示するセッション判定へ修正した。
+- 6枚のOpening Story、コミカルな統一画像、36秒BGM、スキップ、テスト再生を実装した。通常起動での再生は保留のためフラグで無効化し、資産とSceneは残した。
+- Steam公開手順をValve公式情報で確認し、Coming Soon先行、30日待機、14日公開、ストア/Build審査、生成AI申告の準備項目を整理した。
+- 最終検証はUnity Compile、HUD Layout Mutation Guard、Localization Coverage、Console Error確認すべて合格。
+
+### 引き継ぎ
+
+- Opening Story通常再生とスラッシュNEW再取得は、次回実プレイで代表確認する。
+- 次工程はSteam Coming Soonページ素材とRelease Build監査。
 ## 2026-07-10
 
 - Asset全体を用途別フォルダへ整理し、未参照素材と不要なSetup/Rebuild/Test系メニューを削除した。複数回の軽い実プレイ確認で問題なし。
