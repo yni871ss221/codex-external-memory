@@ -211,3 +211,31 @@ related:
 2. 通常起動で `スタジオロゴ → タイトル` となりOpening Storyが再生されないことを確認する。Storyはテスト起動メニューから確認可能。
 3. 「初期スラッシュ削除」取得データで、レベルアップ候補へスラッシュの `NEW` が出ることを実プレイ確認する。
 4. Steam Coming Soonページ向けに、正式タイトル、価格、カプセル画像、1920x1080ゲームプレイスクリーンショット、日英説明文を準備する。
+## 2026-07-15 作業終了時点
+
+- Current Branch: `feature/02_GameSystemUpdate`。
+- ゲームセルを正方形へ変更し、塗り範囲、各種Collider、攻撃範囲・監視塔範囲などを正方形セル基準へ調整した。
+- ボス撃破時の建造物復活でプレイヤーが壁とバリスタの間へ挟まる問題を、復活前の安全位置補正で解消した。
+- ゲーム中HUDを武器3枠のコンパクトパネルへ整理し、武器名、武器種、Lv、空枠、親パネル、近接時透明化を実装した。一時停止中は詳細ステータスへ切り替える。
+- 武器進化を実装した。ソードラッシュ、バナナ、エクスカリバー、黄金の弓、アローシャワー、マシンガン、ファイアミサイル、フロストストーム、サンダーストーム、デュアルシールド、女神の祝福を、進化条件、基礎値差し替え、強化差分引継ぎ、HUD、図鑑、ローカライズ、テスト起動へ接続した。
+- 武器図鑑へ進化パネルをScene配置し、未解放時は元画像の色変更によるシルエット、解放条件、解放後説明を表示する。テスト起動には進化武器指定スタートと確認済み状態初期化を追加した。
+- プレイヤー方向別歩行、Slash/SwordRush、ArrowRain、ArrowShower等の時系列戦闘VisualをAnimator/AnimationClipへ移行した。Runtimeフレーム切替を削除し、Prefab参照とValidatorを正とする。
+- ArrowRainは1 Animator・1 Clipで7本の矢を制御し、X/Yカーブと着弾点をエリア全体へ不規則かつ均等に配置した。Animator戦闘VisualのRotate X/Yと`PaperBillboard.faceCamera`は禁止し、Combat Visual Rotation Guardを追加した。
+- マシンガン弾の寸法を銃弾へ合わせた黒色Spriteへ差し替え、ファイアミサイルは基礎Cooldownをファイアボールの半分とし、ランダム初速から徐々にターゲットへ旋回するホーミングへ変更した。
+- フロストストームは1セルの根元判定を持つ高い氷トゲの単発2倍ダメージと、周囲のFrostエリアを組み合わせた。女神の祝福は正円表示とプレイヤー・建造物の緑色回復量表示へ対応した。
+- UniCLI v1.5.0のAssetImportWorkerによるPID上書きを埋め込みpackageのWorker Guardで防止し、`safe-unity`、Editor Runner、Reporter、Validator、command failure playbookを整備した。
+- 左右移動時のカメラ振動は、物理更新されるPlayer Rigidbody2Dを`Interpolation = Interpolate`へ変更して解消し、ユーザー実機確認済み。
+
+## 直近検証（2026-07-15）
+
+- Player Prefab Import成功、Unity Console Error 0件。左右移動時のカメラ振動解消をユーザーが実機確認済み。
+- Animator移行ではCombat Animator Validator、Combat Visual Rotation Guard、Ground Strike Validator等を実行し、Rotate X/Y違反0件を確認した。
+- HUD、武器進化、各武器挙動・Visualはユーザーが順次実機確認し、進化武器対応は完了扱い。
+- Scene/Prefabにはユーザー調整を含む大きな未コミット差分があるため、本文の機械的整形や再生成を行わない。
+
+## 次チャットの推奨入口（2026-07-15）
+
+1. `AGENTS.md` とこの「2026-07-15 作業終了時点」を読む。
+2. Scene/Prefab上のHUD、武器Visual、AnimationClip、Collider、Scale、Rotationを正とし、RuntimeやMigrationで固定値へ戻さない。
+3. 複数フレーム戦闘VisualはAnimator/AnimationClipをPrefabへ直接設定し、Runtimeは再生開始だけを行う。
+4. 次の新機能へ進む前に、必要なら武器進化11種のバランス値だけを個別調整する。

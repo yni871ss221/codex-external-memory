@@ -217,3 +217,151 @@ related: [[Preferences/language]]
 **NG Action**: Opening Story画像へ細かな質感・陰影を入れ、ゲーム本編より高品質で生成AIらしさが目立つ映像にした。
 **Correct Action**: AreaSurvivorsの物語画像は01/05のような太い輪郭、大きな色面、2〜3段階の陰影、控えめなドット密度を基準にする。既存画像は差し替え前にArchiveへ保存する。
 **Trigger**: Opening Story、漫画、背景など、連続して表示する生成画像を新規作成・差し替え・画風統一するとき。
+
+2026-07-13: 想定外のコマンド失敗後に原因確定より別方式への切替を優先した
+**NG Action**: 新規Editorメニューが見つからなかった時にAssetDatabase Importの有無を調べずCompileを再実行し、その後、同じScene変更を長いEvalへ切り替えて引用符破損を起こした。
+**Correct Action**: コマンド失敗、timeout、無応答、想定外の戻り値が出たら元の機能実装を止める。実行コマンド、終了コード、capture、Handler実装、Unity状態から失敗境界を確定し、Validator/Wrapper/ルールへ反映して限定自己テストが通るまで別方式へ切り替えない。
+**Trigger**: AreaSurvivorsでUniCLI、PowerShell、RTK、Unity Editor Runner、Evalを実行し、期待した応答・Menu登録・終了状態が得られなかったとき。
+
+2026-07-14: 軽微なUI修正で検索Wrapperの引数ミスにより作業を長時間化させた
+**NG Action**: 対象ファイルがほぼ判明している状態で追加検索を行い、`focused-search.ps1`へ未確認の`-First`を渡して実装前に停止した
+**Correct Action**: 軽微修正は既知のScene/C#だけを限定読取し、検索が必要な場合は正式契約の`-TopFiles`または検証済みaliasだけを使う
+**Trigger**: アイコンTint、文言、参照差し替えなど、対象が限定されたFast PathのUI修正
+
+2026-07-14: 軽微修正中に禁止済みの入れ子PowerShellを使用した
+**NG Action**: 削除対象確認と`Remove-Item`を二重引用の`-Command`へ埋め込み、外側Shellに`$relative`等を先行展開させてParserErrorを起こした
+**Correct Action**: 変数・配列・検証を伴うPowerShellは最初から限定`.ps1`を`apply_patch`で作成し、`rtk powershell -File`だけで実行する
+**Trigger**: PowerShellで複数ファイルの検証、移動、削除などを行う時
+
+2026-07-14: 入れ子Scroll Viewで内側Contentを画面全体と誤認した
+**NG Action**: テストメニュー全体をEditor表示する修正で、武器ボタンから親をたどって最初に見つかった`Content/Viewport`を外側Scroll Viewと判断し、内側の武器リストだけを拡張した。
+**Correct Action**: 同名の`Viewport/Content`が入れ子になり得るUIでは、一意な画面Root名から直下階層を解決し、外側Root・外側Content・内側リストのfileID、親子関係、高さを専用Validatorで分離確認する。
+**Trigger**: AreaSurvivorsのメニュー、HUD、図鑑、テスト画面でScroll View、Viewport、Contentを移行・拡張・検証するとき。
+
+2026-07-14: 進化武器ボタン複製時にアイコンを差し替えなかった
+**NG Action**: ソードラッシュのボタンを複製して名前とラベルだけを変更し、子`Icon`の`Image.sprite`を武器種別ごとに設定しなかった。Validatorもボタンの存在確認だけで成功扱いにした。
+**Correct Action**: 種別付きのアイコンUIを複製するときは、種別と期待Spriteの対応表からScene参照を明示設定し、Validatorで全種別の期待Sprite一致まで検証する。
+**Trigger**: AreaSurvivorsで武器、レリック、建造物など、アイコン付きボタンやパネルを複製追加するとき。
+
+2026-07-14: 黄金の弓で基礎武器の一斉発射仕様を満たせなかった
+**NG Action**: 進化固有の貫通処理は追加したが、共通弓処理がターゲット数まで矢を減らす挙動と、128px正方形Effectのワールド表示サイズを通常矢と比較せず採用した。
+**Correct Action**: 進化で変更指定のない発射タイミング・同時発射・ターゲット配分は基礎武器と共通化し、矢本数分を同一フレームで生成する。生成Effectは画像寸法だけでなくPPU適用後のワールドサイズを基礎武器と比較する。
+**Trigger**: AreaSurvivorsで既存武器から進化するProjectile武器を追加・調整するとき。
+
+2026-07-14: 黄金の弓の再修正で通常弓の対象配分を変えてしまった
+**NG Action**: 「矢本数分を同時発射」を満たすため、敵が少ない場合に同じ対象へ巡回配分し、別画像を160 PPUへ変更して通常矢サイズへ近似した。その結果、通常弓の`min(矢本数, 敵数)`契約と厳密な同一サイズ要件を満たさず、実機では4本が4回飛ぶように見える挙動と大きな矢が残った。
+**Correct Action**: 通常弓と同じく1クールタイム1斉射、`min(矢本数, 射程内の敵数)`本を別対象へ同一フレームで発射する。重複要求はクールタイムガードで抑止する。同じサイズ指定では通常矢と同じSprite・Scale・Colliderを使い、金色はTintだけで表現する。
+**Trigger**: AreaSurvivorsで既存武器の進化先について「元武器と同じ仕様」「同じサイズ」と指定された発射処理やProjectile Visualを修正するとき。
+
+2026-07-14: 既知のRoot定数より推測したアセットパスを優先した
+**NG Action**: `WeaponEvolutionBatchMigration`にPrefab/SpriteのRoot定数があるのに、確認用`safe-read`で`Prefabs/Projectiles/`と`Sprites/Generated/`を推測して存在しないパスを渡した。
+**Correct Action**: Migration、Validator、Importerなど既知の管理スクリプトを先に読み、Root定数と対象名から実在パスを確定してから`safe-read`する。一般的なフォルダ分類を記憶で補わない。
+**Trigger**: AreaSurvivorsで生成済みPrefab、進化武器Sprite、Scene移行対象の実在パスを確認するとき。
+
+2026-07-14: 黄金の弓の実発射回数を検証せず修正完了とした
+**NG Action**: `ResolveArrowVolleyProjectileCount`の戻り値と`nextArrowVolleyAt`フィールドの存在だけを専用Validatorで確認し、1クールタイム中に発射入口が何回通って何個のProjectileが生成されたかを検証せず、複数斉射が直ったと報告した。
+**Correct Action**: 発射回数の不具合では、同時に複数本出る「1斉射」と、時間差で同じ斉射が繰り返される「複数回射撃」を分ける。実行可能な限定テストまたは実機traceで、controller instance、frame/time、volley sequence、生成Projectile数を確認してから原因箇所を修正する。
+**Trigger**: AreaSurvivorsでクールタイム、バースト、連射数、Projectile本数に関する実機報告を修正・検証するとき。
+
+### 2026-07-14 要約中のファイル名からGameManagerパスを推測
+
+- 要約にあった `GameManager.cs` を `Assets/AreaSurvivors/Scripts/Game/GameManager.cs` と補完して読み取り、Path Guardに拒否された。
+- 正確な相対パスがない場合は補完せず、対象ディレクトリを限定した `safe-search.ps1 -FilesOnly` で実在パスを確定してから読む。
+
+### 2026-07-14 黄金の弓が1クールタイム内に複数斉射される再発経路
+
+- Projectile/Prefabには追加発射経路がなく、05_GameはGameManager 1個・静的Player/WeaponController 0個、Player PrefabもPlayerController/WeaponController各1個だった。
+- 問題の発射入口は、対象探索とProjectile生成が終わった後に次回時刻を記録していたため、同一時刻に入口が重複した場合の2回目を生成前に拒否できず、対象0体の時も予約が進まなかった。
+- `TryConsumeArrowSchedule` で対象探索前に予約を確定し、同一時刻の2回目を拒否、対象0体でも予約を消費する形へ変更した。弓本来の `min(矢本数, 対象数)` 本を同一斉射で別対象へ出す仕様は維持した。
+- `GameManager.Awake` では重複コンポーネントだけを停止・破棄し、GameObject上の他コンポーネントは壊さない。
+- Golden Bow限定Validatorで同一時刻2回目の拒否、次クールダウンでの再許可、Scene/Prefab個数、参照整合性を実行検証する。Compile 1回、限定Validator、Console Error 0件を確認した。Play Mode確認はユーザーへ委ねる。
+
+2026-07-14: 黄金の弓を実機再現せず防御的修正だけで完了扱いした
+**NG Action**: 静的調査で複数射撃の根本原因が未確定と記録されていたのに、クールダウン予約とGameManager重複Guardを追加し、実際の発射入口回数・Projectile生成時刻をPlay Modeで確認せず修正完了と報告した。
+**Correct Action**: ユーザー実機で継続する発射回数不具合は、許可されたPlay Modeでcontroller instance、volley sequence、frame/time、生成Projectile instanceを実測し、再現ログが示す発生源を修正した後、同じ経路で現象消失まで確認する。防御的Guardや静的Validatorの成功だけで完了扱いしない。
+**Trigger**: 静的Validatorが通っているのに、ユーザーがPlay Mode上のクールタイム・連射・Projectile本数不具合の継続を報告したとき。
+
+### 2026-07-14 黄金の弓の複数斉射に見える根本原因をテストプロファイルで修正
+
+- Play Mode実測で、Golden Bowテスト開始は`logical/display Lv.10`に加えてGameConfig内部Lv.10をステータス参照にも使い、攻撃21・矢4本・クールダウン0.345秒・射程13.3になっていた。
+- 通常ランの武器Lvは、基礎Lv.1へ選択した個別強化だけを加算し、表示Lvを別管理する。テスト開始だけが内部Lv.10の全ステータス自動曲線を読み、短時間に複数の4本斉射が画面へ残る状態を作っていた。
+- 修正はGolden Bowテスト開始だけに限定した。論理Lv10・表示Lv10・進化済み・再レベルアップ不可を維持し、ステータス参照Lvだけ1へ分離する。複数矢テストのため最大Lv由来の矢本数4だけを明示bonusとしてReset後・Refresh前に適用する。
+- 通常プレイの進化、獲得済み個別強化、レリック、特殊効果、共通ArrowLoopは変更しない。
+- 診断用Play HookとProjectile詳細ログは削除した。Compile 2回目、実行型Golden Bow Validator、Console Error 0件を確認した。Play上限2回へ到達したため、修正後の見た目はユーザー実機確認へ委ねる。
+
+2026-07-14: 表示Lv.10を特定の強化選択履歴と同一視した
+**NG Action**: Golden Bowテストを表示Lv.10にする際、複数矢検証のため最大Lv定義由来の矢本数4を合成プロファイルへ入れたが、その4本が「Lv.10までに矢本数強化を3回選んだ場合」の値であり、基礎値ではないことを明確に区別しなかった。
+**Correct Action**: 武器の表示Lvは強化回数だけを示し、どのパラメータを選んだかは確定しない。弓・黄金の弓の基礎矢本数は1本とし、4本は矢本数強化を3回選んだ明示的なテストプロファイルとしてのみ扱う。
+**Trigger**: AreaSurvivorsで武器Lv.10のテスト開始値、進化前強化の引継ぎ、または個別パラメータ強化履歴を設定・説明するとき。
+
+## 2026-07-14 アローシャワーの矢Spriteが円形へ歪んだ
+
+- ユーザー訂正: 3フレーム画像は矢だけだったが、実機では旧水しぶきのような大きな青い円と交差模様が表示された。
+- 根本原因: `GroundStrikeVisualAnimator.visual`が、コピー元Area Prefabから残った`useEllipseShape=1`・`shapeSpriteOverride`ありの`PaperMeshVisual`を参照していた。さらに範囲Visualコンテナにも不要な`PaperMeshVisual`が混入していた。
+- 再発防止: 単体フレームアニメーション用Visualは通常Quadへ正規化し、範囲VisualはMesh FillとLine Outlineだけに限定する。専用ValidatorでPrefab内の`PaperMeshVisual`がAnimator参照先の1つだけであること、楕円設定と範囲側Sprite Visualがないことを検証する。
+- 作業中の再発防止: 既存ルール文書へのpatchは記憶上の文言をアンカーにせず、`safe-read -Pattern`で実在する最小行を確認してから適用する。
+
+## 2026-07-14 範囲Visual全体Copyが不要Spriteを復元した
+
+- 症状: 矢用Visualの楕円設定を解除しても、専用ValidatorでPrefab内の`PaperMeshVisual`が2個残った。
+- 根本原因: `EditorUtility.CopySerialized(sourceArea, targetArea)`がアローレインの色や幅だけでなく、元Prefabの`arrowVisual`・`frames`等の参照依存も移行し、Prefab保存時に不要なSprite Visualを復元した。
+- 再発防止: 参照フィールドを持つVisual Componentは全体Copyせず、Fill/Outline色、幅、Sorting Order、縦横比だけを個別コピーする。移行先のSprite/Frame参照は空配列・nullへ明示し、Prefab内の`PaperMeshVisual`個数をValidatorで固定する。
+
+## 2026-07-14 同名Prefab子ObjectのfileID再利用で旧Visualが残った
+
+- 追加調査: `CopySerialized(sourceArea, targetArea)`を廃止して必要値だけをコピーしても、専用Validatorは`PaperMeshVisual`が2個ある状態を検出した。
+- 証拠: 再保存後も余計な子Object名は`Ellipse Range Outline`、PaperMeshVisualのfileIDは`7749125301234567894`で変わらず、旧Sprite GUID参照も残った。Migrationは削除後にコピー元と同じ子Object名を再作成していた。
+- 原因訂正: 全体Copyだけでなく、`SaveAsPrefabAsset`が同名・同階層Objectを既存fileIDへ対応付け、旧Component構成を保持したことが残存要因。
+- 次回修正: 範囲Visualの子Objectへ移行先専用名を付け、保存後にPrefabを再ロードして`PaperMeshVisual`がAnimator参照先の1個だけであることを確認する。Compile上限2回到達のため、本ターンでは追加実装しない。
+
+## 2026-07-14 アローシャワー旧Visual残存と矢サイズ過大
+
+- ユーザー訂正: 実機で青い水しぶき状Visualが残り、落下矢も大きすぎた。
+- 原因: 範囲Visualの子Objectをコピー元と同じ名前で再作成したため旧fileIDの`PaperMeshVisual`が保持された。矢3フレームは192px画像を96 PPUで読み込み、攻撃範囲Root Scale下で大きく表示されていた。
+- 対応: 旧範囲コンテナを明示削除し、移行先専用名のMesh Fill／Line Outline Objectとして新規作成する。範囲側にSprite Visualを置かない。矢フレームは192 PPUへ変更して表示寸法を半分にし、専用Validatorで旧コンテナ不在・PaperMeshVisual 1個・PPU 192を固定する。
+
+## 2026-07-14 旧Ellipse Visualは範囲コンテナ外のRoot直下に残っていた
+
+- 追加調査: 専用名の新範囲コンテナへ置換後もValidatorは`PaperMeshVisual`を2個検出した。PPU 192のimport条件は通っており、失敗項目はVisual個数のみだった。
+- 根本原因: 旧`Ellipse Range Outline`は後から追加した範囲コンテナの子ではなく、ArrowShowerStrikeのコピー元Area PrefabからRoot直下へ継承された既存Objectだった。コンテナ限定の削除では対象外だった。
+- 再発防止: Prefab全体の`PaperMeshVisual`を列挙し、`GroundStrikeVisualAnimator`参照先以外はGameObjectごと削除する。ValidatorはRoot直下の旧Object名不在とPrefab全体のVisual個数1を確認する。
+
+2026-07-15: アローシャワーの表示サイズと着弾pivotを画像中央のままにした
+**NG Action**: 弓矢フレームを192 PPUへ縮小しただけで十分と判断し、全フレームのSprite Pivotを既定の画像中央に残したため、矢がまだ大きく、3フレーム目の接地点が攻撃エリア中心からずれた。
+**Correct Action**: 指定された追加50%縮小はPPUを192から384へ倍増して反映する。最終フレームの矢軸中心X=90px、接地点Y=下端から22pxを全3フレーム共通Custom Pivot `(90/192, 22/192)`として設定し、ValidatorでPPUとpivotを固定する。
+**Trigger**: 透明余白を持つ落下物・着弾アニメーションの表示サイズまたは着弾中心を調整する時。
+
+2026-07-15: 攻撃範囲Root Scaleと非Billboard設定を落下矢へ継承した
+**NG Action**: ArrowShowerStrikeの攻撃範囲Visualと落下矢Visualを同じPrefab Root配下に置いたまま、`AdvancedWeaponArea.Configure`でRoot全体を範囲半径・セル縦横比へScaleした。また矢Visualの`PaperBillboard.faceCamera`をfalseにしたため、画像は正しい縦横比でも画面上では横長に圧縮され、高さ違いの3フレームも地面上で潰れて見えた。
+**Correct Action**: 動的ScaleはRange Visual専用Containerだけへ適用し、落下矢はそのContainer外でScale `(1,1,1)`を維持する。矢Visualだけ`PaperBillboard.faceCamera=true`にし、地面の範囲VisualはBillboard化しない。AnimatorはSprite差し替えだけに限定する。
+**Trigger**: Area/Range Visualと落下物・着弾アニメーションを同一Prefabで構成する時。
+
+2026-07-15: Animator戦闘VisualへPaperBillboardを付けてRotate X/Yを再導入した
+**NG Action**: Area/Range VisualだけをRotate禁止対象と解釈し、落下矢Spriteを例外として`PaperBillboard.faceCamera=true`にしたため、Play Mode中にカメラ角度のRotate Xが毎フレーム設定された。
+**Correct Action**: Area/Rangeだけでなく、AnimatorでSpriteを切り替える戦闘Visual、落下物、着弾演出もPrefabのRotation X/Yを0にし、`PaperBillboard.faceCamera`を使用しない。Animator、Clip、表示ScaleはPrefabへ保存し、Runtimeは再生開始だけを行う。変更後は`Combat Visual Rotation Guard`で全武器Prefabを検証する。
+**Trigger**: 武器PrefabへAnimator、SpriteRenderer、落下物、着弾演出、Area/Range Visualを追加・変更する時。
+
+2026-07-15: ArrowRainのPrefab Xだけを広げてClip再生時の上書きを見落とした
+**NG Action**: 7個の子TransformをPrefab上で横分散し、Animator ClipはYだけを動かすためXは維持されると判断した。ValidatorもPrefab Xだけを確認したため、Animationウィンドウ上の未設定Position.x既定値0が再生中に全矢を中央へ戻す経路を検出できなかった。
+**Correct Action**: 非0のX配置を持つTransformでYをAnimationClip制御する場合、各対象の`m_LocalPosition.x`を定数カーブとしてClipへ明示保存するか、非アニメーション親AnchorへX配置を分離する。ValidatorはPrefab XとClip Xのパス・値を両方照合する。
+**Trigger**: 複数オブジェクトを横分散しつつ、同じTransformのPosition Yで落下・上下移動アニメーションを作成または調整するとき。
+
+2026-07-15: ArrowRainをX方向だけ均等化し着弾分布が斜めに偏った
+**NG Action**: 7本の落下矢についてPrefabとClipのPosition Xだけを等間隔へ修正し、Position Yの着弾基準と再生位相の空間的な相関を確認しなかった。その結果、中央収束は直っても着弾が左上と右下へ偏って見えた。
+**Correct Action**: 範囲攻撃の落下物はX/Yを一組の二次元着弾点として設計し、中心1点と外周点などエリア全体を覆う不規則な均等配置をPrefabへ保存する。ClipのX定数カーブとY落下カーブも同じ着弾点へ同期し、ValidatorでPrefab X/YとClip X/Yの両方を照合する。
+**Trigger**: 複数の落下物・範囲攻撃VisualをAnimatorの1 Clip内で分散配置するとき。
+
+2026-07-15: マシンガン弾へ短いEffect Spriteを割り当てて圧縮表示にした
+**NG Action**: 銃Prefabを複製したため見た目も同じ寸法になると判断し、マシンガンだけ96×96・PPU 96・可視領域84×26の`MachineGunEffect.png`へ差し替えた。同じPrefab Scaleでも銃弾128×40・PPU 64よりワールド寸法が約半分になり、短く圧縮された弾に見えた。
+**Correct Action**: 基礎武器と同じ見た目寸法を要求された進化Projectileは、Canvas寸法、可視alpha bounds、PPU、Prefab Root/Visual Scale、Colliderを一組で一致させる。差別化は別色Spriteで行い、Runtime Scale補正を追加しない。専用Validatorで全項目を基礎Projectileと比較する。
+**Trigger**: 基礎武器のProjectileを複製し、進化武器用Spriteへ差し替える時。
+
+2026-07-15: ファイアミサイルの攻撃間隔2倍をCooldown値2倍として実装した
+**NG Action**: 「攻撃間隔を2倍」を攻撃頻度ではなく待ち時間の秒数を2倍にする指定として扱い、ファイアボールの基礎Cooldownへ同値を加算した。
+**Correct Action**: ファイアミサイルの基礎攻撃間隔はファイアボールLv.1基礎Cooldownの0.5倍とする。進化前強化を保持する計算は `currentCooldown + evolvedBaseCooldown - levelOneBaseCooldown` とし、その後にラン内強化・レリック等の倍率を適用する。
+**Trigger**: 武器進化仕様で「攻撃間隔」「発射間隔」「Cooldown」の倍率変更を実装・説明するとき。
+
+2026-07-15: Frost Stormの旧PaperMeshVisualをSpriteRenderer検査だけで見逃した
+**NG Action**: 新しい氷トゲSpriteRendererと通常FrostのAnimator参照だけを確認し、コピー元Prefabの`Ellipse Range Outline`に残った`PaperMeshVisual.sourceSprite = FrostStormEffect`を検査しなかった。新旧Visualが二重表示され、画像が差し替わっていないように見えた。
+**Correct Action**: Area Prefab派生武器ではPrefab全体の`PaperMeshVisual`と旧Object名を列挙して不要Objectを削除し、SpriteRendererだけでなく`PaperMeshVisual.sourceSprite`、AnimationClip、`AssetDatabase.GetDependencies`の全経路で旧Sprite依存0件をValidatorに固定する。
+**Trigger**: 既存Area Prefabを複製し、進化武器のSprite・Animator・範囲Visualを差し替える時。

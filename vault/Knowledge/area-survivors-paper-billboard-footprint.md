@@ -48,3 +48,28 @@ related: [[Projects/area-survivors-2-5d-paper-model]]
   - 画面上のCollider高さ: 約`387.66px`
   - 画面上のQuad高さ: 約`387.66px`
 - Scene再オープン後、建造完了後、横移動後にも一致を確認した。
+
+## 2026-07-15 Animator戦闘Visualへの水平展開
+
+- `PaperBillboard.LateUpdate()`は`transform.rotation = Camera.main.transform.rotation`を毎フレーム実行するため、PrefabのRotationが0でもPlay Mode中はカメラ角度のRotate X/Yが表示される。
+- Arrow Shower Animator VisualでRotate X `-38.6`が発生した原因はAnimatorではなく、Migrationが追加した`PaperBillboard.faceCamera=true`だった。
+- 以前のルールがArea/Range Visualだけを禁止し、落下矢Spriteを例外としていたため再導入を防げなかった。
+- 全武器PrefabのArea/Range/Outline配下、Animator+SpriteRenderer、`GroundStrikeAnimatorPlayback`を走査する`Combat Visual Rotation Guard`を追加した。
+- 初回Reporterでは武器Prefab29個、対象Visual31個、違反9件を検出した。内訳はArrowRainAreaの落下矢7件とArrowShowerStrikeの現行・旧Visual各1件。
+- 対象VisualではRotation X/Yと`PaperBillboard.faceCamera`を禁止し、方向表現はZ回転だけを許容する。
+
+## 2026-07-15 水平Migration結果
+
+- `Remove Forbidden Combat Visual Rotation` MigrationでArrowRainArea 7件、ArrowShowerStrike 2件の`PaperBillboard.faceCamera`をPrefabから除去した。
+- Arrow Shower Animator VisualはPrefabへRotation `0/0/0`、Scale `2/2/2`、`ArrowShower.controller`参照を直接保存した。RuntimeはAnimator再生開始だけを行う。
+- Migration後のReporterは武器Prefab29個、対象Visual31個、違反0件。
+- Ground Strike ValidatorとCombat Visual Rotation Guardの完了マーカー更新、Unity Console Error 0件を確認した。
+
+## 2026-07-15 Arrow Shower旧Runtime削除と6キー落下
+
+- `GroundStrikeVisualAnimator.cs`とmeta、`AdvancedWeaponRuntime`の旧フォールバック分岐を削除した。
+- ArrowShowerStrike Prefabから旧Component、Missing Script、旧PaperMeshVisual子ObjectをMigrationで除去した。
+- `ArrowShowerFall.anim`を上空・高・中・低・着弾・着弾保持の6キーへ変更した。
+- 落下Yは`1.60 → 1.25 → 0.90 → 0.45 → 0 → 0`、時刻は`0 → 0.08 → 0.16 → 0.24 → 0.32 → 0.40秒`。着弾時刻はPrefabへ`0.32秒`として保存した。
+- 高さはRuntime処理ではなくAnimationClipの`Transform.m_LocalPosition.y`として保存し、Animationウィンドウから調整できる。
+- Ground Strike Validator、Combat Visual Rotation Guard（違反0件）、Console Error 0件を確認した。

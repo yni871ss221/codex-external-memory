@@ -169,3 +169,18 @@ related:
 - 復活後無敵2秒、復活中床ペナルティ無効、レベルアップごとのHP/移動速度/防御力上昇、リザルト親パネル単位表示、ボス初回撃破後の宝箱/レリック取得経由リザルトを実装した。
 - 日本語フォントをRuntime/Editor双方で適用し、簡体字風の漢字表示を修正した。
 - 直近検証: `unicli exec Compile` 成功。HUD Layout Mutation Guard 実行済み。主要項目はユーザー実機確認済み。Unity Scene/Prefab差分は大きいため本文diffは読まず、status/statとCompile中心で確認した。
+
+## 2026-07-15
+
+- 正方形セル化と塗り・Collider・攻撃範囲調整、建造物復活時のスタック防止を実装した。
+- ゲーム中武器HUDを3枠コンパクト表示へ整理し、一時停止中の詳細HUD、空枠、武器名・種別・Lv、近接透明化へ対応した。
+- 11種類の武器進化、進化条件、基礎値差し替えと強化差分引継ぎ、進化選択演出、HUD、図鑑、日英表示、テスト起動導線を実装した。
+- ArrowRain/ArrowShowerを含む時系列戦闘Visualとプレイヤー歩行をAnimatorへ移行し、Runtimeフレーム切替を削除した。Rotation Guardと各種Validatorを追加した。
+- 黄金の弓の同時発射、マシンガン弾寸法、ファイアミサイルCooldown/ホーミング、フロストストーム二段攻撃、女神の祝福回復表示などを実機確認に基づき調整した。
+- UniCLIのAssetImportWorker PID上書き、sandbox権限誤判定、長時間待機、Wrapper引数ミスを再発防止するGuard、Reporter、command failure playbook、Obsidian知見を整備した。
+- 最後にPlayer Rigidbody2DのInterpolationを有効化し、左右移動時のカメラ振動解消をユーザー確認した。
+
+### 引き継ぎ
+
+- 武器進化11種とカメラ振動修正は完了。次回は新機能または数値バランス調整から開始可能。
+- Scene/PrefabとAnimationClipのユーザー調整を正とし、既存配置・Sprite・Collider・Scale・Rotationを再生成処理で戻さない。
